@@ -19,9 +19,11 @@ import sys
 import os
 import sys
 import re
-
 from datetime import date,time, timedelta
 
+version='v1.0'
+
+print('Loading GlyApp '+version)
 # Get the encoding of the file in relation to the file type
 FILE_ENCODING = {
 	'capteur_medtronics': 'utf-16',
@@ -711,3 +713,5 @@ def calc_glu(patient='GZ2',
 				f.write('\n')
 	# =============================================================================
 	return IDX_all
+
+print('GlyApp successfully loaded !')
