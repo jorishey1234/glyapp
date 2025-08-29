@@ -50,7 +50,10 @@ def date_col_num(d):
 def datenum(d):
 	dates = pd.to_datetime(d)
 	#res=pd.to_numeric((dates - pd.Timestamp("1970-01-01")) // pd.Timedelta('1s'))/3600/24.
-	res1=np.float64((dates - pd.Timestamp("1970-01-01")) // pd.Timedelta('1s'))/3600/24.
+	if len(d)>1:
+		res1=np.float64((dates - pd.Timestamp("1970-01-01")) // pd.Timedelta('1s'))/3600/24.
+	else:
+		res1=np.float64((dates.iloc[0] - pd.Timestamp("1970-01-01")) // pd.Timedelta('1s'))/3600/24.
 	#print(d,'res:',res.to_numpy(),'res1:',res1)
 	return res1
 
