@@ -655,15 +655,25 @@ def calc_glu(patient='GZ2',
 		IDX['hypo_Start']=numdate(hstart).round('min')
 		IDX['hypo_Stop']=numdate(hstop).round('min')
 		IDX['hypo_Duration']=np.uint16((hstop-hstart)*60*24); # in minutes
-		IDX['hypo_Duration_mean']=np.mean(IDX['hypo_Duration']) # in minutes
-		IDX['hypo_Duration_sum']=np.sum(IDX['hypo_Duration']) # in minutes
-		IDX['hypo_Duration_max']=np.max(IDX['hypo_Duration']) # in minutes
-		IDX['hypo_Duration_freq']=len(IDX['hypo_Duration'])/(T_interp[-1]-T_interp[0]) # in hypo/day
+		if len(IDX['hypo_Duration'])>0:
+			IDX['hypo_Duration_mean']=np.mean(IDX['hypo_Duration']) # in minutes
+			IDX['hypo_Duration_sum']=np.sum(IDX['hypo_Duration']) # in minutes
+			IDX['hypo_Duration_max']=np.max(IDX['hypo_Duration']) # in minutes
+			IDX['hypo_Duration_freq']=len(IDX['hypo_Duration'])/(T_interp[-1]-T_interp[0]) # in hypo/day
 		# =============================================================================
 		# # Prolongated hypoglycemia
 		# =============================================================================
-		IDX['hypo_Start_prol'],IDX['hypo_Stop_prol']=calc_hypo(Glu_interp,T_interp,[120,120],[54,54])
-		IDX['hypo_Duration_prol']=(IDX['hypo_Stop_prol']-IDX['hypo_Start_prol'])*60*24; # in minutes
+		#IDX['hypo_Start_prol'],IDX['hypo_Stop_prol']=calc_hypo(Glu_interp,T_interp,[120,120],[54,54])
+		#IDX['hypo_Duration_prol']=(IDX['hypo_Stop_prol']-IDX['hypo_Start_prol'])*60*24; # in minutes
+		hstart,hstop=calc_hypo(Glu_interp,T_interp,[120,120],[54,54])
+		IDX['hypo_prol_Start']=numdate(hstart).round('min')
+		IDX['hypo_prol_Stop']=numdate(hstop).round('min')
+		IDX['hypo_prol_Duration']=np.uint16((hstop-hstart)*60*24); # in minutes
+		if len(IDX['hypo_prol_Duration'])>0:
+			IDX['hypo_prol_Duration_mean']=np.mean(IDX['hypo_prol_Duration']) # in minutes
+			IDX['hypo_prol_Duration_sum']=np.sum(IDX['hypo_prol_Duration']) # in minutes
+			IDX['hypo_prol_Duration_max']=np.max(IDX['hypo_prol_Duration']) # in minutes
+			IDX['hypo_prol_Duration_freq']=len(IDX['hypo_prol_Duration'])/(T_interp[-1]-T_interp[0]) # in hypo/day
 		
 		
 		fBG=1.509*(np.log(Glu/conv_factor)**1.084-5.381); # symetric BG (in mg/dl !!)
