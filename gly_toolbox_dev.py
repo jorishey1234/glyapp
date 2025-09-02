@@ -20,7 +20,7 @@ import os
 import sys
 import re
 from datetime import date,time, timedelta
-
+ 
 version='dev version'
 
 print('Loading GlyApp '+version)
@@ -649,9 +649,16 @@ def calc_glu(patient='GZ2',
 		# =============================================================================
 		# # Normal hypoglycemia
 		# =============================================================================
-		IDX['hypo_Start'],IDX['hypo_Stop']=calc_hypo(Glu_interp,T_interp,[15,15],[54,70])
-		IDX['hypo_Duration']=(IDX['hypo_Stop']-IDX['hypo_Start'])*60*24; # in minutes
-		
+		#IDX['hypo_Start'],IDX['hypo_Stop']=calc_hypo(Glu_interp,T_interp,[15,15],[54,70])
+		#IDX['hypo_Duration']=(IDX['hypo_Stop']-IDX['hypo_Start'])*60*24; # in minutes
+		hstart,hstop=calc_hypo(Glu_interp,T_interp,[15,15],[54,70])
+		IDX['hypo_Start']=numdate(hstart).round('min')
+		IDX['hypo_Stop']=numdate(hstop).round('min')
+		IDX['hypo_Duration']=np.uint16((hstop-hstart)*60*24); # in minutes
+		IDX['hypo_Duration_mean']=np.mean(IDX['hypo_Duration']) # in minutes
+		IDX['hypo_Duration_sum']=np.sum(IDX['hypo_Duration']) # in minutes
+		IDX['hypo_Duration_max']=np.max(IDX['hypo_Duration']) # in minutes
+		IDX['hypo_Duration_freq']=len(IDX['hypo_Duration'])/(T_interp[-1]-T_interp[0]) # in hypo/day
 		# =============================================================================
 		# # Prolongated hypoglycemia
 		# =============================================================================
