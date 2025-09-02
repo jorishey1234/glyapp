@@ -42,6 +42,8 @@ FILE_ENCODING = {
 	'sport': 'iso8859',
 }
 
+
+
 def date_col_num(d):
 	df = pd.DataFrame(d, columns=['year','month','day','hour','minute','second'])
 	num=datenum(df)
@@ -442,6 +444,7 @@ def read_Glu(patient,encoding='utf-8'):
 	# ===== Medtronics CANADA mmol =====
 	fpath = os.path.join(base_dir, "Capteur_medtronics_canada_mmol.csv")
 	if os.path.exists(fpath):
+		print('Capteur detecté : Capteur_medtronics_canada_mmol.csv')
 		with open(fpath, "r", encoding=FILE_ENCODING['capteur_medtronics_canada_mmol']) as f:
 			for line in f:
 				m = re.match(r"\d+;(\d{2})/(\d{2})/(\d{4});(\d{2}):(\d{2}):(\d{2}).*?([\d.]+);([\d.]+)", line)
@@ -449,13 +452,26 @@ def read_Glu(patient,encoding='utf-8'):
 					g = list(map(float, m.groups()))
 					append_entry(int(g[2]), int(g[1]), int(g[0]), int(g[3]), int(g[4]), int(g[5]),
 								 g[7], g[6] * mmolTomg)
-			GluTime, GluValue=sort_times(GluTime, GluValue)
-			return GluTime, GluValue
+		if len(GluTime)==0:
+			print('try read_csv pandas method')
+			Data=pd.read_csv(fpath,delimiter=';',skiprows=6)#,parse_dates=[['Date', 'Time']])
+			GluValue=pd.to_numeric(Data['Sensor Glucose (mmol/L)'],downcast='float',errors='coerce').to_numpy() * mmolTomg
+			GluValue=np.tile(GluValue.reshape(-1,1),2)
+			TimeTemp=pd.to_datetime(Data['Date']+' '+Data['Time'],errors='coerce').fillna(value=pd.Timestamp('20000101'))
+			GluTime=np.vstack((TimeTemp.dt.year.to_numpy(),
+					  TimeTemp.dt.month.to_numpy(),
+					  TimeTemp.dt.day.to_numpy(),
+					  TimeTemp.dt.hour.to_numpy(),
+					  TimeTemp.dt.minute.to_numpy(),
+					  TimeTemp.dt.second.to_numpy())).T
+		GluTime, GluValue=sort_times(GluTime, GluValue)
+		return GluTime, GluValue
 
 	# ===== Medtronics CANADA mg =====
 	fpath = os.path.join(base_dir, "Capteur_medtronics_canada_mg.csv")
 	if os.path.exists(fpath):
 		with open(fpath, "r", encoding=FILE_ENCODING['capteur_medtronics_canada_mmol']) as f:
+			print('Capteur detecté : Capteur_medtronics_canada_mg')
 			for line in f:
 				line = line.replace(",", ".")
 				m = re.match(r"[\d.]+;(\d{4})/(\d{2})/(\d{2});(\d{2}):(\d{2}):(\d{2}).*?([\d.]+);[\d.]+", line)
@@ -470,6 +486,7 @@ def read_Glu(patient,encoding='utf-8'):
 	fpath = os.path.join(base_dir, "Capteur_dexcom_canada_mmol.txt")
 	if os.path.exists(fpath):
 		with open(fpath, "r", encoding=FILE_ENCODING['capteur_dexcom_canada_mmol']) as f:
+			print('Capteur detecté : Capteur_dexcom_canada_mmol')
 			for line in f:
 				#m = re.match(r".*?(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2}).*?([\d.]+)", line)
 				m = re.match(r"\t\t(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})\t(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})\t(\d.)", line)
