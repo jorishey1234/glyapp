@@ -44,6 +44,7 @@ FILE_ENCODING = {
 
 
 
+
 def date_col_num(d):
 	df = pd.DataFrame(d, columns=['year','month','day','hour','minute','second'])
 	num=datenum(df)
@@ -508,6 +509,104 @@ def read_Glu(patient,encoding='utf-8'):
 								 g[-1] * mmolTomg)
 			GluTime, GluValue=sort_times(GluTime, GluValue)
 			return GluTime, GluValue
+		
+	# ===== Dexcom CANADA mmol =====
+	fname="MEDTRONIC_CANADA_EXPORT.csv"
+	col_gly='Sensor Glucose (mmol/L)'
+	col_date='Date'
+	col_time='Time'
+	skiprows=6
+	fpath = os.path.join(base_dir, fname)
+	if os.path.exists(fpath):
+		print('Capteur detecté :'+fname)
+		Data=pd.read_csv(fpath,delimiter=';',skiprows=skiprows,low_memory=False)#,parse_dates=[['Date', 'Time']])
+		print(Data)
+		GluValue=pd.to_numeric(Data[col_gly],downcast='float',errors='coerce').to_numpy() * mmolTomg
+		GluValue=np.tile(GluValue.reshape(-1,1),2)
+		TimeTemp=pd.to_datetime(Data[col_date]+' '+Data[col_time],errors='coerce').fillna(value=pd.Timestamp('20000101'))
+		GluTime=np.vstack((TimeTemp.dt.year.to_numpy(),
+				  TimeTemp.dt.month.to_numpy(),
+				  TimeTemp.dt.day.to_numpy(),
+				  TimeTemp.dt.hour.to_numpy(),
+				  TimeTemp.dt.minute.to_numpy(),
+				  TimeTemp.dt.second.to_numpy())).T
+		GluTime, GluValue=sort_times(GluTime, GluValue)
+		GluTime, GluValue=clean_data(GluTime, GluValue)
+		print('Successfully Read ',GluTime.shape[0],' values !')
+		return GluTime, GluValue
+	
+	# ===== Dexcom CANADA mmol =====
+	fname="CLARITY_CANADA_EXPORT.csv"
+	col_gly='Glucose Value (mmol/L)'
+	col_time='Timestamp (YYYY-MM-DDThh:mm:ss)'
+	skiprows=0
+	fpath = os.path.join(base_dir, fname)
+	if os.path.exists(fpath):
+		print('Capteur detecté :'+fname)
+		Data=pd.read_csv(fpath,delimiter=';',skiprows=skiprows,low_memory=False)#,parse_dates=[['Date', 'Time']])
+		#print(Data)
+		GluValue=pd.to_numeric(Data[col_gly],downcast='float',errors='coerce').to_numpy() * mmolTomg
+		GluValue=np.tile(GluValue.reshape(-1,1),2)
+		TimeTemp=pd.to_datetime(Data[col_time],errors='coerce').fillna(value=pd.Timestamp('20000101'))
+		GluTime=np.vstack((TimeTemp.dt.year.to_numpy(),
+				  TimeTemp.dt.month.to_numpy(),
+				  TimeTemp.dt.day.to_numpy(),
+				  TimeTemp.dt.hour.to_numpy(),
+				  TimeTemp.dt.minute.to_numpy(),
+				  TimeTemp.dt.second.to_numpy())).T
+		GluTime, GluValue=sort_times(GluTime, GluValue)
+		GluTime, GluValue=clean_data(GluTime, GluValue)
+		print('Successfully Read ',GluTime.shape[0],' values !')
+		return GluTime, GluValue
+	
+	# ===== Dexcom CANADA mmol =====
+	fname="DIASEND_CANADA_EXPORT.csv"
+	col_gly='mmol/L'
+	col_time='Time'
+	skiprows=4
+	fpath = os.path.join(base_dir, fname)
+	if os.path.exists(fpath):
+		print('Capteur detecté :'+fname)
+		Data=pd.read_csv(fpath,delimiter=';',skiprows=skiprows,low_memory=False)#,parse_dates=[['Date', 'Time']])
+		#print(Data)
+		GluValue=pd.to_numeric(Data[col_gly],downcast='float',errors='coerce').to_numpy() * mmolTomg
+		GluValue=np.tile(GluValue.reshape(-1,1),2)
+		TimeTemp=pd.to_datetime(Data[col_time],errors='coerce').fillna(value=pd.Timestamp('20000101'))
+		GluTime=np.vstack((TimeTemp.dt.year.to_numpy(),
+				  TimeTemp.dt.month.to_numpy(),
+				  TimeTemp.dt.day.to_numpy(),
+				  TimeTemp.dt.hour.to_numpy(),
+				  TimeTemp.dt.minute.to_numpy(),
+				  TimeTemp.dt.second.to_numpy())).T
+		GluTime, GluValue=sort_times(GluTime, GluValue)
+		GluTime, GluValue=clean_data(GluTime, GluValue)
+		print('Successfully Read ',GluTime.shape[0],' values !')
+		return GluTime, GluValue
+		
+	# ===== TidePool CANADA mmol =====
+	fname="TIDEPOOL_CANADA_EXPORT.csv"
+	col_gly='Value'
+	col_time='Local Time'
+	skiprows=0
+	fpath = os.path.join(base_dir, fname)
+	if os.path.exists(fpath):
+		print('Capteur detecté :'+fname)
+		Data=pd.read_csv(fpath,delimiter=';',skiprows=skiprows,low_memory=False)#,parse_dates=[['Date', 'Time']])
+		#print(Data)
+		GluValue=pd.to_numeric(Data[col_gly],downcast='float',errors='coerce').to_numpy() * mmolTomg
+		GluValue=np.tile(GluValue.reshape(-1,1),2)
+		TimeTemp=pd.to_datetime(Data[col_time],errors='coerce').fillna(value=pd.Timestamp('20000101'))
+		GluTime=np.vstack((TimeTemp.dt.year.to_numpy(),
+				  TimeTemp.dt.month.to_numpy(),
+				  TimeTemp.dt.day.to_numpy(),
+				  TimeTemp.dt.hour.to_numpy(),
+				  TimeTemp.dt.minute.to_numpy(),
+				  TimeTemp.dt.second.to_numpy())).T
+		GluTime, GluValue=sort_times(GluTime, GluValue)
+		GluTime, GluValue=clean_data(GluTime, GluValue)
+		print('Successfully Read ',GluTime.shape[0],' values !')
+		return GluTime, GluValue
+		
 	print('Warning : no glycemia values have been read! \nTry manually converting to standard capteur format :\n'+
 	   'capteur_standard.csv : \n%d/%m/%Y;%H:%M:%S;value')
 	return [],[]
