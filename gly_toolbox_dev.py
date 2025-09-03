@@ -304,6 +304,15 @@ def read_Glu(patient,encoding='utf-8'):
 		GluTime = GluTime[sorted_idx]
 		GluValue = GluValue[sorted_idx]
 		return GluTime,GluValue
+	
+	
+	def clean_data(GluTime,GluValue):
+		# ===== remove nan data =====
+		GluTime = np.array(GluTime)
+		GluValue = np.array(GluValue)
+		# remove nan and years that are = lower than 2000
+		idnan=np.where(np.isnan(GluValue[:,0])|(GluTime[:,0]==2000))[0]
+		return np.delete(GluTime,idnan,axis=0),np.delete(GluValue,idnan,axis=0)
 
 	# ===== Format STANDARD =====
 	fpath = os.path.join(base_dir, "Capteur_standard.csv")
@@ -453,8 +462,7 @@ def read_Glu(patient,encoding='utf-8'):
 					append_entry(int(g[2]), int(g[1]), int(g[0]), int(g[3]), int(g[4]), int(g[5]),
 								 g[7], g[6] * mmolTomg)
 		if len(GluTime)==0:
-			print('try read_csv pandas method')
-			Data=pd.read_csv(fpath,delimiter=';',skiprows=6)#,parse_dates=[['Date', 'Time']])
+			Data=pd.read_csv(fpath,delimiter=';',skiprows=6,low_memory=False)#,parse_dates=[['Date', 'Time']])
 			GluValue=pd.to_numeric(Data['Sensor Glucose (mmol/L)'],downcast='float',errors='coerce').to_numpy() * mmolTomg
 			GluValue=np.tile(GluValue.reshape(-1,1),2)
 			TimeTemp=pd.to_datetime(Data['Date']+' '+Data['Time'],errors='coerce').fillna(value=pd.Timestamp('20000101'))
@@ -465,6 +473,9 @@ def read_Glu(patient,encoding='utf-8'):
 					  TimeTemp.dt.minute.to_numpy(),
 					  TimeTemp.dt.second.to_numpy())).T
 		GluTime, GluValue=sort_times(GluTime, GluValue)
+		GluTime, GluValue=clean_data(GluTime, GluValue)
+		
+		print('Successfully Read ',GluTime.shape[0],' values !')
 		return GluTime, GluValue
 
 	# ===== Medtronics CANADA mg =====
