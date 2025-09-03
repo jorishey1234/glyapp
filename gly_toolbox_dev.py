@@ -316,8 +316,10 @@ def read_Glu(patient,encoding='utf-8'):
 		return np.delete(GluTime,idnan,axis=0),np.delete(GluValue,idnan,axis=0)
 
 	# ===== Format STANDARD =====
-	fpath = os.path.join(base_dir, "Capteur_standard.csv")
+	fname="Capteur_standard.csv"
+	fpath = os.path.join(base_dir, fname)
 	if os.path.exists(fpath):
+		print('Reading from '+fname)
 		with open(fpath, "r",encoding=FILE_ENCODING['capteur_standard']) as f:
 			for line in f:
 				line = line.replace(",", ".").strip()
@@ -395,8 +397,10 @@ def read_Glu(patient,encoding='utf-8'):
 				return GluTime, GluValue
 
 	# ===== FREESTYLE =====
-	fpath = os.path.join(base_dir, "Capteur_freestyle.txt")
+	fname="Capteur_freestyle.txt"
+	fpath = os.path.join(base_dir, fname)
 	if os.path.exists(fpath):
+		print("Reading from ", fname)
 		with open(fpath, "r", encoding=FILE_ENCODING['capteur_freestyle']) as f:
 			for line in f:
 				# Try several patterns
@@ -425,6 +429,27 @@ def read_Glu(patient,encoding='utf-8'):
 						matched = True
 						break
 			GluTime, GluValue=sort_times(GluTime, GluValue)
+			if len(GluTime)==0:
+				col_gly='Historique de la glycémie mg/dL'
+				col_time="Horodatage de l'appareil"
+				skiprows=2
+				dayfirst=True
+				Data=pd.read_csv(fpath,delimiter='\t',skiprows=skiprows,low_memory=False)#,parse_dates=[['Date', 'Time']])
+				#print(Data)
+				GluValue=pd.to_numeric(Data[col_gly],downcast='float',errors='coerce').to_numpy()
+				GluValue=np.tile(GluValue.reshape(-1,1),2)
+				TimeTemp=pd.to_datetime(Data[col_time],errors='coerce',dayfirst=dayfirst).fillna(value=pd.Timestamp('20000101'))
+				GluTime=np.vstack((TimeTemp.dt.year.to_numpy(),
+						  TimeTemp.dt.month.to_numpy(),
+						  TimeTemp.dt.day.to_numpy(),
+						  TimeTemp.dt.hour.to_numpy(),
+						  TimeTemp.dt.minute.to_numpy(),
+						  TimeTemp.dt.second.to_numpy())).T
+			GluTime, GluValue=sort_times(GluTime, GluValue)
+			GluTime, GluValue=clean_data(GluTime, GluValue)
+			
+			print('Successfully Read ',GluTime.shape[0],' values !')
+			
 			return GluTime, GluValue
 
 	# ===== FREESTYLE PRO =====
