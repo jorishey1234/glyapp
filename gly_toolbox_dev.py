@@ -26,6 +26,7 @@ red='\x1b[41m'
 orange='\x1b[43m'
 green='\x1b[42m'
 black='\x1b[40m'
+black='\x1b[47m'
 
 print('Loading GlyApp '+version)
 # Get the encoding of the file in relation to the file type
@@ -412,7 +413,7 @@ def read_glu_pandas(patient,verbose=True):
 			sensor_config=sensors[sensors['Sensor']==sensor]
 			#print(sensor_config["delimiter"].iloc[0],sensor_config["skiprows"].iloc[0])
 			Data=pd.read_csv(fpath,delimiter=str(sensor_config["delimiter"].iloc[0]),skiprows=int(sensor_config["skiprows"].iloc[0]),encoding=sensor_config["encoding"].iloc[0],engine='python')
-			#print(list(Data.columns.values))
+			print(list(Data.columns.values))
 			GluValue=pd.to_numeric(Data[sensor_config["col_value"].iloc[0]],downcast='float',errors='coerce').to_numpy()
 			GluValue=np.tile(GluValue.reshape(-1,1)*conversion_factor(sensor_config["units"].iloc[0]),2)
 			if str(sensor_config["col_datetime"].iloc[0])!='nan':
