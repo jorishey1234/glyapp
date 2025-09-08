@@ -5,7 +5,7 @@ Created on Sun Aug 24 15:25:03 2025
 
 @author: joris
 """
-
+import glob
 import numpy as np
 #import random
 import pandas as pd
@@ -22,6 +22,10 @@ import re
 from datetime import date,time, timedelta
  
 version='dev version'
+red='\x1b[41m'
+orange='\x1b[43m'
+green='\x1b[42m'
+black='\x1b[40m'
 
 print('Loading GlyApp '+version)
 # Get the encoding of the file in relation to the file type
@@ -42,7 +46,17 @@ FILE_ENCODING = {
 	'sport': 'iso8859',
 }
 
-
+def test_all():
+	# test all folder in DATA
+	base='./Data/'
+	folders=glob.glob(base+'*')
+	for f in folders:
+		try:
+			read_glu_pandas(f[len(base):])
+		except:
+			print(red+'Error reading patient'+f +'\n'+black)
+	return None
+	
 def read_libraries(delimiter=';',encoding='utf-8'):
 	sensors=pd.read_csv('sensor_library.csv',delimiter=delimiter,encoding=encoding)
 	filenames=pd.read_csv('filename_sensors.csv',delimiter=delimiter)
@@ -349,10 +363,11 @@ def plot_patient(patient='GZ2',encoding='utf-8',
 			os.mkdir(save_folder)
 		plt.savefig(save_folder+'Results_'+patient+'.pdf',bbox_inches='tight')
 
-def read_glu_pandas(patient):
+def read_glu_pandas(patient,verbose=True):
 	
 	base_dir = os.path.join(".", "Data", patient)
-	print('Reading Glycemia file in '+base_dir)
+	if verbose:
+		print('Reading Glycemia file in '+base_dir)
 	
 	def sort_times(GluTime,GluValue):
 		# ===== Sort by ascending time =====
@@ -388,15 +403,16 @@ def read_glu_pandas(patient):
 		fpath = os.path.join(base_dir, f)
 		#print(fpath)
 		if os.path.exists(fpath):
-			print('Reading from '+ f)
+			if verbose:
+				print('Reading from '+ f)
 			sensor=filename['Sensor'][i]
-			print('Sensor format detected:',sensor)
+			if verbose:
+				print('Sensor format detected:',sensor)
 			# Find configuration of sensor in sensors library
 			sensor_config=sensors[sensors['Sensor']==sensor]
-			print(sensor_config["delimiter"].iloc[0],sensor_config["skiprows"].iloc[0])
-			print(fpath)
+			#print(sensor_config["delimiter"].iloc[0],sensor_config["skiprows"].iloc[0])
 			Data=pd.read_csv(fpath,delimiter=str(sensor_config["delimiter"].iloc[0]),skiprows=int(sensor_config["skiprows"].iloc[0]),encoding=sensor_config["encoding"].iloc[0],engine='python')
-			print(list(Data.columns.values))
+			#print(list(Data.columns.values))
 			GluValue=pd.to_numeric(Data[sensor_config["col_value"].iloc[0]],downcast='float',errors='coerce').to_numpy()
 			GluValue=np.tile(GluValue.reshape(-1,1)*conversion_factor(sensor_config["units"].iloc[0]),2)
 			if str(sensor_config["col_datetime"].iloc[0])!='nan':
@@ -411,9 +427,9 @@ def read_glu_pandas(patient):
 					  TimeTemp.dt.second.to_numpy())).T
 			GluTime, GluValue=sort_times(GluTime, GluValue)
 			GluTime, GluValue=clean_data(GluTime, GluValue)
-			print('Reading success ! ', GluTime.shape[0] ,  ' values have been read !')
+			print(green+'Reading success ! ', GluTime.shape[0] ,  ' values have been read ! \n'+black)
 			return GluTime, GluValue
-	print('Warning ! No data has been read')
+	print(orange + 'Warning ! No data has been read\n' + black)
 	return [],[]
 
 def read_Glu(patient,encoding='utf-8'):
