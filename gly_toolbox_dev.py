@@ -51,11 +51,14 @@ def test_all():
 	# test all folder in DATA
 	base='./Data/'
 	folders=glob.glob(base+'*')
+	score=0
 	for f in folders:
 		try:
-			read_glu_pandas(f[len(base):])
+			read_Glu(f[len(base):])
+			score+=1
 		except:
 			print(red+'Error reading patient'+f +'\n'+black)
+	print('\n \n ==== \n SCORE : ',score/len(folders)*100,' % of successful reading !')
 	return None
 	
 def read_libraries(delimiter=';',encoding='utf-8'):
@@ -456,9 +459,23 @@ def read_glu_pandas(patient,verbose=True):
 	print(orange + 'Warning ! No data has been read\n' + black)
 	return [],[]
 
+
+
 def read_Glu(patient,encoding='utf-8'):
-	
-	
+	# General function to read Glycemic data
+	try:
+		GluTime_all,GluValue_all=read_glu_pandas(patient)
+		if len(GluTime_all)==0:
+			print('Warning: Reading with read_glu_pandas has failed...')
+			print('Trying with read_gluoctave...')
+			GluTime_all,GluValue_all=read_glu_octave(patient,encoding=encoding)
+	except:
+		print('Warning: Reading with read_glu_pandas has failed...')
+		print('Trying with read_glu_octave...')
+		GluTime_all,GluValue_all=read_glu_octave(patient,encoding=encoding)
+	return GluTime_all,GluValue_all
+
+def read_glu_octave(patient,encoding='utf-8'):
 	mmolTomg = 18.02  # conversion factor mmol/L to mg/L
 	
 	GluTime = []
@@ -716,7 +733,7 @@ def read_Glu(patient,encoding='utf-8'):
 				m = re.match(r"\t\t(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})\t(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})\t(\d.)", line)
 				if m:
 					g = list(map(float, m.groups()))
-					print(g[6])
+					#print(g[6])
 					append_entry(int(g[0]), int(g[1]), int(g[2]), int(g[3]), int(g[4]), int(g[5]),
 								 g[-1] * mmolTomg)
 			GluTime, GluValue=sort_times(GluTime, GluValue)
