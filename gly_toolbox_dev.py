@@ -218,6 +218,7 @@ def plot_patient(patient='GZ2',encoding='utf-8',
 				 hypo=70,hyper=180,
 				 superhypo=54,superhyper=250,
 				 plot_acc=False,
+				 filt_acc=0,
 				 seuils_acc=[0,100,250,500,1000,2000],
 				 plot_bpm=False,
 				 seuils_bpm=[20,60,100,120,150,200,300],
@@ -239,10 +240,10 @@ def plot_patient(patient='GZ2',encoding='utf-8',
 		try:
 			accelero=read_accelero(patient)
 			# filter
-			nfilt=500
 			#accelero['Norm']=scipy.ndimage.median_filter(accelero['Norm'].to_numpy(),nfilt)
 			#N=scipy.ndimage.gaussian_filter1d(accelero['Norm'].to_numpy(),nfilt)
-			Nini=scipy.ndimage.median_filter(accelero['Norm'].to_numpy(),nfilt)
+			Nini=scipy.ndimage.median_filter(accelero['Norm'].to_numpy(),
+			filt_acc)
 			N=np.copy(Nini)
 			# si seuils, modifier N
 			print(N.max(),N.min())
