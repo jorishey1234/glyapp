@@ -397,7 +397,7 @@ def read_glu_pandas(patient,verbose=True):
 		idnan=np.where(np.isnan(GluValue[:,0])|(GluTime[:,0]==2000))[0]
 		return np.delete(GluTime,idnan,axis=0),np.delete(GluValue,idnan,axis=0)
 	
-	filename,sensors=read_libraries(encoding='ISO-8859-15')
+	filename,sensors=read_libraries(encoding='utf-8')
 # 	print(sensors['delimiter'])
 # 	print(filename)
 	for i,f in enumerate(filename['Filename']):
@@ -412,23 +412,43 @@ def read_glu_pandas(patient,verbose=True):
 			# Find configuration of sensor in sensors library
 			sensor_config=sensors[sensors['Sensor']==sensor]
 			#print(sensor_config["delimiter"].iloc[0],sensor_config["skiprows"].iloc[0])
-			Data=pd.read_csv(fpath,delimiter=str(sensor_config["delimiter"].iloc[0]),skiprows=int(sensor_config["skiprows"].iloc[0]),encoding=sensor_config["encoding"].iloc[0],engine='python')
-			print(list(Data.columns.values))
-			GluValue=pd.to_numeric(Data[sensor_config["col_value"].iloc[0]],downcast='float',errors='coerce').to_numpy()
-			GluValue=np.tile(GluValue.reshape(-1,1)*conversion_factor(sensor_config["units"].iloc[0]),2)
-			if str(sensor_config["col_datetime"].iloc[0])!='nan':
-				TimeTemp=pd.to_datetime(Data[sensor_config["col_datetime"].iloc[0]],errors='coerce',dayfirst=sensor_config["dayfirst"].iloc[0]).fillna(value=pd.Timestamp('20000101'))
-			else:
-				TimeTemp=pd.to_datetime(Data[sensor_config["col_date"].iloc[0]]+' '+Data[sensor_config["col_time"].iloc[0]],errors='coerce',dayfirst=sensor_config["dayfirst"].iloc[0]).fillna(value=pd.Timestamp('20000101'))
-			GluTime=np.vstack((TimeTemp.dt.year.to_numpy(),
-					  TimeTemp.dt.month.to_numpy(),
-					  TimeTemp.dt.day.to_numpy(),
-					  TimeTemp.dt.hour.to_numpy(),
-					  TimeTemp.dt.minute.to_numpy(),
-					  TimeTemp.dt.second.to_numpy())).T
-			GluTime, GluValue=sort_times(GluTime, GluValue)
-			GluTime, GluValue=clean_data(GluTime, GluValue)
-			print(green+'Reading success ! ', GluTime.shape[0] ,  ' values have been read ! \n'+black)
+			try:
+				Data=pd.read_csv(fpath,delimiter=str(sensor_config["delimiter"].iloc[0]),skiprows=int(sensor_config["skiprows"].iloc[0]),encoding=sensor_config["encoding"].iloc[0],engine='python')
+				print(list(Data.columns.values))
+				GluValue=pd.to_numeric(Data[sensor_config["col_value"].iloc[0]],downcast='float',errors='coerce').to_numpy()
+				GluValue=np.tile(GluValue.reshape(-1,1)*conversion_factor(sensor_config["units"].iloc[0]),2)
+				if str(sensor_config["col_datetime"].iloc[0])!='nan':
+					TimeTemp=pd.to_datetime(Data[sensor_config["col_datetime"].iloc[0]],errors='coerce',dayfirst=sensor_config["dayfirst"].iloc[0]).fillna(value=pd.Timestamp('20000101'))
+				else:
+					TimeTemp=pd.to_datetime(Data[sensor_config["col_date"].iloc[0]]+' '+Data[sensor_config["col_time"].iloc[0]],errors='coerce',dayfirst=sensor_config["dayfirst"].iloc[0]).fillna(value=pd.Timestamp('20000101'))
+				GluTime=np.vstack((TimeTemp.dt.year.to_numpy(),
+						  TimeTemp.dt.month.to_numpy(),
+						  TimeTemp.dt.day.to_numpy(),
+						  TimeTemp.dt.hour.to_numpy(),
+						  TimeTemp.dt.minute.to_numpy(),
+						  TimeTemp.dt.second.to_numpy())).T
+				GluTime, GluValue=sort_times(GluTime, GluValue)
+				GluTime, GluValue=clean_data(GluTime, GluValue)
+				print(green+'Reading success ! ', GluTime.shape[0] ,  ' values have been read ! \n'+black)
+			except: # Try skiprows+1
+				Data=pd.read_csv(fpath,delimiter=str(sensor_config["delimiter"].iloc[0]),skiprows=int(sensor_config["skiprows"].iloc[0]+1),encoding=sensor_config["encoding"].iloc[0],engine='python')
+				print(list(Data.columns.values))
+				GluValue=pd.to_numeric(Data[sensor_config["col_value"].iloc[0]],downcast='float',errors='coerce').to_numpy()
+				GluValue=np.tile(GluValue.reshape(-1,1)*conversion_factor(sensor_config["units"].iloc[0]),2)
+				if str(sensor_config["col_datetime"].iloc[0])!='nan':
+					TimeTemp=pd.to_datetime(Data[sensor_config["col_datetime"].iloc[0]],errors='coerce',dayfirst=sensor_config["dayfirst"].iloc[0]).fillna(value=pd.Timestamp('20000101'))
+				else:
+					TimeTemp=pd.to_datetime(Data[sensor_config["col_date"].iloc[0]]+' '+Data[sensor_config["col_time"].iloc[0]],errors='coerce',dayfirst=sensor_config["dayfirst"].iloc[0]).fillna(value=pd.Timestamp('20000101'))
+				GluTime=np.vstack((TimeTemp.dt.year.to_numpy(),
+						  TimeTemp.dt.month.to_numpy(),
+						  TimeTemp.dt.day.to_numpy(),
+						  TimeTemp.dt.hour.to_numpy(),
+						  TimeTemp.dt.minute.to_numpy(),
+						  TimeTemp.dt.second.to_numpy())).T
+				GluTime, GluValue=sort_times(GluTime, GluValue)
+				GluTime, GluValue=clean_data(GluTime, GluValue)
+				print(green+'Reading success ! ', GluTime.shape[0] ,  ' values have been read ! \n'+black)
+
 			return GluTime, GluValue
 	print(orange + 'Warning ! No data has been read\n' + black)
 	return [],[]
@@ -804,7 +824,7 @@ def read_Glu(patient,encoding='utf-8'):
 def read_cardio(patient):
 	import glob
 	print("cardio")
-	files=glob.glob('./Data/'+patient+'/V800_12*.CSV')
+	files=glob.glob('./Data/'+patient+'/V800_*.CSV')
 	for i,filename in enumerate(files):
 		#filename='./Data/'+patient+'/V800_12_2021-04-26_09-43-48.CSV'
 		# Read first start time
