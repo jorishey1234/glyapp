@@ -218,9 +218,10 @@ def plot_patient(patient='GZ2',encoding='utf-8',
 				 hypo=70,hyper=180,
 				 superhypo=54,superhyper=250,
 				 plot_acc=False,
-				 filt_acc=0,
+				 filt_acc=1,
 				 seuils_acc=[0,100,250,500,1000,2000],
 				 plot_bpm=False,
+				 filt_bpm=1,
 				 seuils_bpm=[20,60,100,120,150,200,300],
 				 plot_alt=0,
 				 savefig=True,
@@ -261,7 +262,7 @@ def plot_patient(patient='GZ2',encoding='utf-8',
 			nfilt=50
 			#accelero['Norm']=scipy.ndimage.median_filter(accelero['Norm'].to_numpy(),nfilt)
 			#N=scipy.ndimage.gaussian_filter1d(accelero['Norm'].to_numpy(),nfilt)
-			BPMini=scipy.ndimage.median_filter(cardio['HR (bpm)'].to_numpy(),nfilt)
+			BPMini=scipy.ndimage.median_filter(cardio['HR (bpm)'].to_numpy(),filt_bpm)
 			BPM=np.copy(BPMini)
 			#print(np.nanmin(BPM),np.nanmax(BPM))
 			for i in range(len(seuils_bpm)-1):
@@ -310,11 +311,12 @@ def plot_patient(patient='GZ2',encoding='utf-8',
 			isin_pd=(cardio['Time']>start_1+pd.Timedelta(days=n))&(cardio['Time']<start_1+pd.Timedelta(days=n+1))
 			ny=200
 			img=BPM[isin_pd].reshape(1,-1)
-# 			img=BPM[isin_pd].reshape(-1,1)
-# 			img=np.tile(img,ny).T
-# 			x,y=np.meshgrid(np.arange(img.shape[1]),np.arange(img.shape[0]))
-# 			std=ny/800*(BPM[isin_pd]-30).reshape(1,-1)
-# 			img=img*np.exp(-(y-ny/2)**2/(2*std**2))
+			if len(seuils_bpm)==0:
+				img=BPM[isin_pd].reshape(-1,1)
+				img=np.tile(img,ny).T
+				x,y=np.meshgrid(np.arange(img.shape[1]),np.arange(img.shape[0]))
+				std=ny/800*(BPM[isin_pd]-30).reshape(1,-1)
+				img=img*np.exp(-(y-ny/2)**2/(2*std**2))
 			#print(BPM[isin_pd])
 			#print(n,len(isin_pd))
 			ax[n].imshow(img,cmap=plt.cm.PuRd,extent=[start_1,start_1+pd.Timedelta(days=1),0,superhyper*1.2],alpha=0.4,aspect='auto')
