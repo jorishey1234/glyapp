@@ -1,0 +1,11 @@
+Sensor;encoding;delimiter;skiprows;col_date;col_time;col_datetime;dayfirst;col_value;units;Issues with High or Low  glucose values
+freeStyle;utf-8;\t;1;;;Heure;FALSE;Historique du taux de glucose (mg/dL);mg/dL;Replace HIGH by 500 and LOW by 40
+freeStyle_pro_ancien;utf-8;";|\t";2;;;Horodatage de l'appareil;TRUE;Historique de la glycémie mg/dL;mg/dL;
+standard;utf-8;";";0;Date (jj/mm/aaaa);Heure(hh:mm:ss);;TRUE;Capteur de glycemie (mg/dl);mg/dL;
+ipro2;utf-16le;\t;11;Date;Heure;Horodatage;TRUE;Capteur de glycémie (mg/dl);mg/dL;Before using the code, manually check if some empty cases should not be replaced by 40 or 400
+dexcom;utf-8;\t;0;;;GlucoseInternalTime;TRUE;GlucoseValue;mg/dL;In some old files, replace HIGH by 400 and LOW by 40
+dexcom_canada;utf-8;",";0;;;Timestamp (YYYY-MM-DDThh:mm:ss);FALSE;Glucose Value (mmol/L);mmol/L;Replace HIGH by 22.2 mmol/L and LOW by 2.22 mmol/L
+medtronic_canada;utf-8;";";6;Date;Time;;TRUE;Sensor Glucose (mmol/L);mmol/L;
+diasend_canada;utf-8;";";4;;;Time;TRUE;mmol/L;mmol/L;
+tidepool_canada;utf-8;";";0;;;Local Time;FALSE;Value;mmol/L;
+ipro2_valeur;utf-16le;\t;11;Date;Heure;Horodatage;TRUE;Valeur de capteur (mg/dl);mg/dL;Before using the code, manually check if some empty cases should not be 

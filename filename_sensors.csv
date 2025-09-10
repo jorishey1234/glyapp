@@ -1,0 +1,11 @@
+Filename;Sensor
+Capteur_freestyle.txt;freeStyle
+Capteur_freestyle_pro.csv;freeStyle_pro_ancien
+Capteur_standard.csv;standard
+Capteur.csv;ipro2
+Capteur_valeur.csv;ipro2_valeur
+Capteur.txt;dexcom
+CLARITY_CANADA_EXPORT.csv;dexcom_canada
+MEDTRONIC_CANADA_EXPORT.csv;medtronic_canada
+DIASEND_CANADA_EXPORT.csv;diasend_canada
+TIDEPOOL_CANADA_EXPORT.csv;tidepool_canada
