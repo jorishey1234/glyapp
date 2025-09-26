@@ -20,7 +20,7 @@ import os
 import sys
 import re
 from datetime import date,time, timedelta
- 
+
 version='dev version'
 red='\x1b[41m'
 orange='\x1b[43m'
@@ -61,10 +61,30 @@ def test_all():
 	print('\n \n ==== \n SCORE : ',score/len(folders)*100,' % of successful reading !')
 	return None
 	
-def read_libraries(delimiter=';',encoding='utf-8'):
+def read_libraries(delimiter=',',encoding='utf-8'):
 	sensors=pd.read_csv('sensor_library.csv',delimiter=delimiter,encoding=encoding)
 	filenames=pd.read_csv('filename_sensors.csv',delimiter=delimiter)
 	return filenames,sensors
+
+def import_libraries_pyodide():
+	url = 'https://docs.google.com/spreadsheets/d/1KH61giiVdZmQJ8h97awgeSCJKCYvDwdM6-nsSYvjSxc/gviz/tq?tqx=out:csv&sheet={sensor_library}'
+	with open('sensor_library.csv','w') as f:
+		f.write(pyodide.http.open_url(url).read())
+	url = 'https://docs.google.com/spreadsheets/d/1Ya7Y9joet36BuhjC7pecI9VnejrPgPFFIm6Z4mo29IU/gviz/tq?tqx=out:csv&sheet={sensor_library}'
+	with open('filename_sensors.csv','w') as f:
+		f.write(pyodide.http.open_url(url).read())
+	return None
+
+def conversion_factor(units):
+	factor=1
+
+def import_libraries_urllib():
+	import urllib
+	url = 'https://docs.google.com/spreadsheets/d/1KH61giiVdZmQJ8h97awgeSCJKCYvDwdM6-nsSYvjSxc/gviz/tq?tqx=out:csv&sheet={sensor_library}'
+	urllib.request.urlretrieve(url,'sensor_library.csv')
+	url = 'https://docs.google.com/spreadsheets/d/1Ya7Y9joet36BuhjC7pecI9VnejrPgPFFIm6Z4mo29IU/gviz/tq?tqx=out:csv&sheet={sensor_library}'
+	urllib.request.urlretrieve(url,'filename_sensors.csv')
+	return None
 
 def conversion_factor(units):
 	factor=1
@@ -76,6 +96,34 @@ def date_col_num(d):
 	df = pd.DataFrame(d, columns=['year','month','day','hour','minute','second'])
 	num=datenum(df)
 	return num
+
+def sort_times(GluTime,GluValue):
+	# ===== Sort by ascending time =====
+	GluTime = np.array(GluTime)
+	GluValue = np.array(GluValue)
+	
+	# Possibly reorder year month day
+	if GluTime.shape[0]>0:
+		GluTime_temp=np.copy(GluTime)
+		idyear=np.where(GluTime[0,:]>1000)[0][0]
+		GluTime_temp[:,0]=GluTime[:,idyear]
+		GluTime_temp[:,idyear]=GluTime[:,0]
+		GluTime=GluTime_temp
+	
+	datetimes = [datetime(*map(int, t)) for t in GluTime]
+	sorted_idx = np.argsort(datetimes)
+	GluTime = GluTime[sorted_idx]
+	GluValue = GluValue[sorted_idx]
+	return GluTime,GluValue
+
+
+def clean_data(GluTime,GluValue):
+	# ===== remove nan data =====
+	GluTime = np.array(GluTime)
+	GluValue = np.array(GluValue)
+	# remove nan and years that are = lower than 2000
+	idnan=np.where(np.isnan(GluValue[:,0])|(GluTime[:,0]==2000))[0]
+	return np.delete(GluTime,idnan,axis=0),np.delete(GluValue,idnan,axis=0)
 
 def datenum(d):
 	dates = pd.to_datetime(d)
@@ -225,11 +273,11 @@ def plot_patient(patient='GZ2',encoding='utf-8',
 				 seuils_acc=[0,100,250,500,1000,2000],
 				 plot_bpm=False,
 				 filt_bpm=1,
-				 seuils_bpm=[20,60,100,120,150,200,300],
+				 seuils_bpm=[20,300],
 				 plot_alt=0,
 				 savefig=True,
 				 lw=2):
-
+	
 	xformatter = mdates.DateFormatter('%H:%M')
 	GluTime_all,GluValue_all=read_Glu(patient,encoding=encoding)
 	T_interp_all=np.arange(date_col_num(GluTime_all[0,:].reshape(1,-1)),date_col_num(GluTime_all[-1,:].reshape(1,-1)),1/(60*24)) # reinterpolate data on 1 min intervals
@@ -268,9 +316,10 @@ def plot_patient(patient='GZ2',encoding='utf-8',
 			BPMini=scipy.ndimage.median_filter(cardio['HR (bpm)'].to_numpy(),filt_bpm)
 			BPM=np.copy(BPMini)
 			#print(np.nanmin(BPM),np.nanmax(BPM))
-			for i in range(len(seuils_bpm)-1):
-				#print(seuils_bpm[i])
-				BPM[(BPMini>seuils_bpm[i])&(BPMini<=seuils_bpm[i+1])]=i
+# 			for i in range(len(seuils_bpm)-1):
+# 				#print(seuils_bpm[i])
+# 				BPM[(BPMini>seuils_bpm[i])&(BPMini<=seuils_bpm[i+1])]=i
+# 			print(BPM)
 			#print(np.nanmin(BPM),np.nanmax(BPM))
 			ALT=scipy.ndimage.median_filter(cardio['Altitude (m)'].to_numpy(),nfilt)*plot_alt
 		except:
@@ -312,17 +361,27 @@ def plot_patient(patient='GZ2',encoding='utf-8',
 
 		if plot_bpm:
 			isin_pd=(cardio['Time']>start_1+pd.Timedelta(days=n))&(cardio['Time']<start_1+pd.Timedelta(days=n+1))
-			ny=200
-			img=BPM[isin_pd].reshape(1,-1)
-			if len(seuils_bpm)==0:
-				img=BPM[isin_pd].reshape(-1,1)
-				img=np.tile(img,ny).T
-				x,y=np.meshgrid(np.arange(img.shape[1]),np.arange(img.shape[0]))
-				std=ny/800*(BPM[isin_pd]-30).reshape(1,-1)
-				img=img*np.exp(-(y-ny/2)**2/(2*std**2))
+# 			ny=200
+# 			img=BPM[isin_pd].reshape(1,-1)
+# 			if len(seuils_bpm)==0:
+# 				img=BPM[isin_pd].reshape(-1,1)
+# 				img=np.tile(img,ny).T
+# 				x,y=np.meshgrid(np.arange(img.shape[1]),np.arange(img.shape[0]))
+# 				std=ny/800*(BPM[isin_pd]-30).reshape(1,-1)
+# 				img=img*np.exp(-(y-ny/2)**2/(2*std**2))
+			#print(BPM[isin_pd])
+			Timetemp=cardio['Time'][isin_pd].copy().reset_index()
+			ax[n].fill_between(Timetemp['Time']-pd.Timedelta(days=n),150-(BPM[isin_pd]-50)*1,150+(BPM[isin_pd]-50)*1,color='Red',alpha=0.5,edgecolor='w')
+# 			for i in range(len(seuils_bpm)-1):
+# #				print(BPM[isin_pd],len(BPM[isin_pd]))
+# 				id_seuil=np.where((BPM[isin_pd]>seuils_bpm[i])&((BPM[isin_pd]<=seuils_bpm[i+1])))[0]
+# 				print(len(id_seuil))
+# # 				print(cardio['Time'][isin_pd])
+# # 				print(id_seuil,cardio['Time'][isin_pd])
+# 				ax[n].fill_between(Timetemp['Time'][id_seuil]-pd.Timedelta(days=n),150-(BPM[isin_pd][id_seuil]-50)*1,150+(BPM[isin_pd][id_seuil]-50)*1,color=plt.cm.PuRd((i+1)/(len(seuils_bpm)-1.)),alpha=0.5,edgecolor='w')
 			#print(BPM[isin_pd])
 			#print(n,len(isin_pd))
-			ax[n].imshow(img,cmap=plt.cm.PuRd,extent=[start_1,start_1+pd.Timedelta(days=1),0,superhyper*1.2],alpha=0.4,aspect='auto')
+			#ax[n].imshow(img,cmap=plt.cm.PuRd,extent=[start_1,start_1+pd.Timedelta(days=1),0,superhyper*1.2],alpha=0.4,aspect='auto')
 
 		if plot_alt>0:
 			isin_pd=(cardio['Time']>start_1+pd.Timedelta(days=n))&(cardio['Time']<start_1+pd.Timedelta(days=n+1))
@@ -375,34 +434,7 @@ def read_glu_pandas(patient,verbose=True):
 	base_dir = os.path.join(".", "Data", patient)
 	if verbose:
 		print('Reading Glycemia file in '+base_dir)
-	
-	def sort_times(GluTime,GluValue):
-		# ===== Sort by ascending time =====
-		GluTime = np.array(GluTime)
-		GluValue = np.array(GluValue)
-		
-		# Possibly reorder year month day
-		if GluTime.shape[0]>0:
-			GluTime_temp=np.copy(GluTime)
-			idyear=np.where(GluTime[0,:]>1000)[0][0]
-			GluTime_temp[:,0]=GluTime[:,idyear]
-			GluTime_temp[:,idyear]=GluTime[:,0]
-			GluTime=GluTime_temp
-		
-		datetimes = [datetime(*map(int, t)) for t in GluTime]
-		sorted_idx = np.argsort(datetimes)
-		GluTime = GluTime[sorted_idx]
-		GluValue = GluValue[sorted_idx]
-		return GluTime,GluValue
-	
-	def clean_data(GluTime,GluValue):
-		# ===== remove nan data =====
-		GluTime = np.array(GluTime)
-		GluValue = np.array(GluValue)
-		# remove nan and years that are = lower than 2000
-		idnan=np.where(np.isnan(GluValue[:,0])|(GluTime[:,0]==2000))[0]
-		return np.delete(GluTime,idnan,axis=0),np.delete(GluValue,idnan,axis=0)
-	
+
 	filename,sensors=read_libraries(encoding='utf-8')
 # 	print(sensors['delimiter'])
 # 	print(filename)
@@ -489,34 +521,6 @@ def read_glu_octave(patient,encoding='utf-8'):
 			GluValue.append([val1, val1])
 		else:
 			GluValue.append([val1, val2])
-	
-	def sort_times(GluTime,GluValue):
-		# ===== Sort by ascending time =====
-		GluTime = np.array(GluTime)
-		GluValue = np.array(GluValue)
-		
-		# Possibly reorder year month day
-		if GluTime.shape[0]>0:
-			GluTime_temp=np.copy(GluTime)
-			idyear=np.where(GluTime[0,:]>1000)[0][0]
-			GluTime_temp[:,0]=GluTime[:,idyear]
-			GluTime_temp[:,idyear]=GluTime[:,0]
-			GluTime=GluTime_temp
-		
-		datetimes = [datetime(*map(int, t)) for t in GluTime]
-		sorted_idx = np.argsort(datetimes)
-		GluTime = GluTime[sorted_idx]
-		GluValue = GluValue[sorted_idx]
-		return GluTime,GluValue
-	
-	
-	def clean_data(GluTime,GluValue):
-		# ===== remove nan data =====
-		GluTime = np.array(GluTime)
-		GluValue = np.array(GluValue)
-		# remove nan and years that are = lower than 2000
-		idnan=np.where(np.isnan(GluValue[:,0])|(GluTime[:,0]==2000))[0]
-		return np.delete(GluTime,idnan,axis=0),np.delete(GluValue,idnan,axis=0)
 
 	# ===== Format STANDARD =====
 	fname="Capteur_standard.csv"
