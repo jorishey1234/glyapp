@@ -271,6 +271,7 @@ def plot_patient(patient='GZ2',encoding='utf-8',
 				 plot_acc=False,
 				 filt_acc=1,
 				 seuils_acc=[0,100,250,500,1000,2000],
+ 				 plot_temp=0,
 				 plot_bpm=False,
 				 filt_bpm=1,
 				 seuils_bpm=[20,300],
@@ -306,7 +307,7 @@ def plot_patient(patient='GZ2',encoding='utf-8',
 			plot_acc=False
 
 	# Read cardio :
-	if (plot_bpm)|(plot_alt>0):
+	if (plot_bpm)|(plot_alt>0)|(plot_temp>0):
 		try:
 			cardio=read_cardio(patient)
 			# filter
@@ -316,16 +317,17 @@ def plot_patient(patient='GZ2',encoding='utf-8',
 			BPMini=scipy.ndimage.median_filter(cardio['HR (bpm)'].to_numpy(),filt_bpm)
 			BPM=np.copy(BPMini)
 			#print(np.nanmin(BPM),np.nanmax(BPM))
-# 			for i in range(len(seuils_bpm)-1):
-# 				#print(seuils_bpm[i])
-# 				BPM[(BPMini>seuils_bpm[i])&(BPMini<=seuils_bpm[i+1])]=i
-# 			print(BPM)
+			for i in range(len(seuils_bpm)-1):
+				#print(seuils_bpm[i])
+				BPM[(BPMini>seuils_bpm[i])&(BPMini<=seuils_bpm[i+1])]=i
 			#print(np.nanmin(BPM),np.nanmax(BPM))
 			ALT=scipy.ndimage.median_filter(cardio['Altitude (m)'].to_numpy(),nfilt)*plot_alt
+			TMP=(scipy.ndimage.median_filter(cardio['Temperatures (C)'].to_numpy(),nfilt)+5)*plot_temp
 		except:
-			print('Warning: no cardio was read')
+			print('Warning: no cardio or temp was read')
 			plot_bpm=False
 			plot_alt=0
+			plot_temp=0
 
 	# Intervals
 	if not start:
@@ -391,6 +393,16 @@ def plot_patient(patient='GZ2',encoding='utf-8',
 			gly2alt=lambda x:x*plot_alt
 			secax = ax[n].secondary_yaxis('right', functions=(alt2gly, gly2alt),color='Gray')
 			secax.set_xlabel('Altitude [m]')
+		#ax[n].xaxis.grid(True, which='minor')
+		
+		if plot_temp>0:
+			isin_pd=(cardio['Time']>start_1+pd.Timedelta(days=n))&(cardio['Time']<start_1+pd.Timedelta(days=n+1))
+			#print(TMP[isin_pd])
+			ax[n].plot(cardio['Time'][isin_pd]-pd.Timedelta(days=n),TMP[isin_pd],color='Red',alpha=1)
+			tmp2gly=lambda x:x/plot_temp-5
+			gly2tmp=lambda x:(x+5)*plot_temp
+			secax = ax[n].secondary_yaxis('right', functions=(tmp2gly, gly2tmp),color='Red')
+			secax.set_xlabel('Temperature [C]',color='Red')
 		#ax[n].xaxis.grid(True, which='minor')
 # =============================================================================
 # 		Plot Glycemia
