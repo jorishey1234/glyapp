@@ -902,7 +902,8 @@ def calc_glu(patient='GZ2',
 			 intervals=np.array([]).reshape(-1,2),
 			 WRITE='a',
 			 encoding='utf-8',
-			 verbose=False):
+			 verbose=False,
+			 interp=False):
 # 	patient='GZ2';
 # 	GluCible=np.array([[70,140],[70,180],[54,200],[60,300]]);
 # 	intervals=np.array([]).reshape(-1,2)
@@ -991,19 +992,47 @@ def calc_glu(patient='GZ2',
 	# add whole period to intervals
 	intervals=np.vstack(([start.strftime('%Y-%m-%d %X'),end.strftime('%Y-%m-%d %X')],intervals))
 	
+	print(intervals)
+#	file_path_inter = Path('Data')/patient/'interval_file.csv'
+	file_path_inter = './Data/'+patient+'/interval_file.csv'
+	if os.path.exists(file_path_inter):
+		inter_df = pd.read_csv(file_path_inter, skiprows=0, sep=';')
+		inter_df['Date_start'] = inter_df['Date_start'].astype('string')
+		inter_df['Heure_start'] = inter_df['Heure_start'].astype('string')
+		#inter_df['timetemps_start'] = pd.to_datetime(inter_df['Date_start']+ ' ' + inter_df['Heure_start'],format='%d/%m/%Y %H:%M:%S',dayfirst=True,errors='coerce')
+		inter_df['Date_end'] = inter_df['Date_end'].astype('string')
+		inter_df['Heure_end'] = inter_df['Heure_end'].astype('string')
+		#inter_df['timetemps_end'] = pd.to_datetime(inter_df['Date_end'] +' ' + inter_df['Heure_end'],format='%d/%m/%Y %H:%M:%S',dayfirst=True,errors='coerce')
+		for i in range(len(inter_df)):
+			startint=inter_df['Date_start'][i]+' '+ inter_df['Heure_start'][i]
+			endint=inter_df['Date_end'][i]+' '+ inter_df['Heure_end'][i]
+			intervals=np.vstack((intervals,[startint,endint]))
+		print(intervals)
+		
+		#print("les heures de départ sont :",inter_df['timetemps_start'])
+		#print("les heures de fin sont :",inter_df['timetemps_end'])
+	else:
+		print("Fichier d'interval non trouve")
+		
+	
 	
 	IDX_all=[]
 	
 	for interval in intervals:
 		isin=(GluTime_all_pd>pd.to_datetime(interval[0]))&(GluTime_all_pd<=pd.to_datetime(interval[1]))
 		GluTime_pd=GluTime_all_pd[isin]
-		Glu=GluValue_all[isin,1]
+		Glu_raw=GluValue_all[isin,1]
+		
 		Index_pd=np.arange(len(GluTime_pd))
 		isin_interp=(T_interp_all>datenum(pd.to_datetime(interval[0])))&(T_interp_all<=datenum(pd.to_datetime(interval[1])))
 		GluNaN=GluNaN_all[isin_interp]
 		Glu_interp=Glu_interp_all[isin_interp]*GluNaN
 		T_interp=T_interp_all[isin_interp]
 		
+		if interp:
+			Glu=Glu_interp
+		else:
+			Glu=Glu_raw
 		# Dictionnary of index results
 		IDX={}
 		# =============================================================================
@@ -1013,6 +1042,8 @@ def calc_glu(patient='GZ2',
 		IDX['glycemia_min'] = np.nanmin(Glu)
 		IDX['glycemia_max'] = np.nanmax(Glu)
 		IDX['glycemia_std'] = np.nanstd(Glu)
+		IDX['coef_var'] = (np.nanstd(Glu)/np.nanmean(Glu))*100
+		IDX['initial_value'] = Glu[0]
 		
 		# % of good values
 		IDX['%_good_values'] = 100 * (1- np.sum(np.isnan(GluNaN))/len(GluNaN))
@@ -1055,6 +1086,11 @@ def calc_glu(patient='GZ2',
 			IDX['hypo_Duration_sum']=np.sum(IDX['hypo_Duration']) # in minutes
 			IDX['hypo_Duration_max']=np.max(IDX['hypo_Duration']) # in minutes
 			IDX['hypo_Duration_freq']=len(IDX['hypo_Duration'])/(T_interp[-1]-T_interp[0]) # in hypo/day
+		else:
+			IDX['hypo_Duration_mean']=0 # in minutes
+			IDX['hypo_Duration_sum']=0 # in minutes
+			IDX['hypo_Duration_max']=0
+			IDX['hypo_Duration_freq']=0
 		# =============================================================================
 		# # Prolongated hypoglycemia
 		# =============================================================================
@@ -1069,8 +1105,13 @@ def calc_glu(patient='GZ2',
 			IDX['hypo_prol_Duration_sum']=np.sum(IDX['hypo_prol_Duration']) # in minutes
 			IDX['hypo_prol_Duration_max']=np.max(IDX['hypo_prol_Duration']) # in minutes
 			IDX['hypo_prol_Duration_freq']=len(IDX['hypo_prol_Duration'])/(T_interp[-1]-T_interp[0]) # in hypo/day
-		
-		
+		else:
+			IDX['hypo_prol_Duration_mean']=0
+			IDX['hypo_prol_Duration_sum']=0
+			IDX['hypo_prol_Duration_max']=0
+			IDX['hypo_prol_Duration_freq']=0
+			
+			
 		fBG=1.509*(np.log(Glu/conv_factor)**1.084-5.381); # symetric BG (in mg/dl !!)
 		rBG=10*fBG**2.; # risk BG
 		rlBG=rBG*(fBG<0); # risk BG left
@@ -1170,5 +1211,6 @@ def calc_glu(patient='GZ2',
 		return IDX_all
 	else:
 		return
+
 
 print('GlyApp successfully loaded !')
