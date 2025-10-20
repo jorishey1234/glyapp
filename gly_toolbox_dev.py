@@ -441,6 +441,168 @@ def plot_patient(patient='GZ2',encoding='utf-8',
 			os.mkdir(save_folder)
 		plt.savefig(save_folder+'Results_'+patient+'.pdf',bbox_inches='tight')
 
+def short_plot_patient(patient='GZ2',encoding='utf-8',
+				 start=None,
+				 end=None,
+				 hypo=70,hyper=180,
+				 superhypo=54,superhyper=250,
+				 plot_acc=False,
+				 filt_acc=1,
+				 seuils_acc=[0,100,250,500,1000,2000],
+				 plot_bpm=False,
+				 filt_bpm=1,
+				 seuils_bpm=[20,60,100,120,150,200,300],
+				 plot_alt=0,
+				 savefig=True,
+				 lw=2):
+
+	xformatter = mdates.DateFormatter('%H:%M')
+	GluTime_all,GluValue_all=read_Glu(patient,encoding=encoding)
+	T_interp_all=np.arange(date_col_num(GluTime_all[0,:].reshape(1,-1)),date_col_num(GluTime_all[-1,:].reshape(1,-1)),1/(60*24)) # reinterpolate data on 1 min intervals
+	Glu_interp_all=np.interp(T_interp_all,date_col_num(GluTime_all),GluValue_all[:,1])
+	Glu_all=np.copy(GluValue_all)
+	# Date as a panda format
+	GluTime_all_pd=numdate(date_col_num(GluTime_all))
+	#Index_all_pd=np.arange(len(GluTime_pd))
+	
+	# Read accelero :
+	if plot_acc:
+		try:
+			accelero=read_accelero(patient)
+			# filter
+			#accelero['Norm']=scipy.ndimage.median_filter(accelero['Norm'].to_numpy(),nfilt)
+			#N=scipy.ndimage.gaussian_filter1d(accelero['Norm'].to_numpy(),nfilt)
+			Nini=scipy.ndimage.median_filter(accelero['Norm'].to_numpy(),
+			filt_acc)
+			N=np.copy(Nini)
+			# si seuils, modifier N
+			print(N.max(),N.min())
+			for i in range(len(seuils_acc)-1):
+				N[(Nini>seuils_acc[i])&(Nini<seuils_acc[i+1])]=i
+		except:
+			print('Warning: no accelerometer was read')
+			plot_acc=False
+
+	# Read cardio :
+	if (plot_bpm)|(plot_alt>0):
+		try:
+			cardio=read_cardio(patient)
+			# filter
+			nfilt=50
+			#accelero['Norm']=scipy.ndimage.median_filter(accelero['Norm'].to_numpy(),nfilt)
+			#N=scipy.ndimage.gaussian_filter1d(accelero['Norm'].to_numpy(),nfilt)
+			BPMini=scipy.ndimage.median_filter(cardio['HR (bpm)'].to_numpy(),filt_bpm)
+			BPM=np.copy(BPMini)
+			#print(np.nanmin(BPM),np.nanmax(BPM))
+			for i in range(len(seuils_bpm)-1):
+				#print(seuils_bpm[i])
+				BPM[(BPMini>seuils_bpm[i])&(BPMini<=seuils_bpm[i+1])]=i
+			#print(np.nanmin(BPM),np.nanmax(BPM))
+			ALT=scipy.ndimage.median_filter(cardio['Altitude (m)'].to_numpy(),nfilt)*plot_alt
+		except:
+			print('Warning: no cardio was read')
+			plot_bpm=False
+			plot_alt=0
+
+	# Intervals
+	if not start:
+		start = numdate(date_col_num(GluTime_all[:1,:]))
+	else:
+		start = pd.Timestamp(start)
+	if not end:
+		end = numdate(date_col_num(GluTime_all[-1:,:]))
+	else:
+		end = pd.Timestamp(end)
+	
+	start_1 = pd.Timestamp(start)
+	end_1= pd.Timestamp(end)
+	
+	print(start,end)
+	ndays = max(1, int(np.ceil((end_1 - start_1) / pd.Timedelta(days=1))))
+	fig,ax=plt.subplots(ndays,1,figsize=(15,ndays*0.2*15),sharex=True)
+	ax = np.atleast_1d(ax)
+	
+	for n in range(ndays):
+		day_start = start_1.normalize() + pd.Timedelta(days=n)
+		t0 = max(start_1, day_start)
+		t1 = min(end_1, day_start + pd.Timedelta(days=1))
+		if t1 <= t0:
+			ax[n].axis('off')
+			continue
+# =============================================================================
+		# Plot Accelero
+# =============================================================================
+		if plot_acc:
+			isin_pd=(accelero['Date']>=t0)&(accelero['Date']<t1)
+			if np.any(isin_pd):
+				img=N[isin_pd].reshape(1,-1)
+				ax[n].imshow(img,cmap=plt.cm.YlOrBr,extent=[t0,t1,0,superhyper*1.2],alpha=0.4,aspect='auto')
+
+
+		if plot_bpm:
+			isin_pd=(cardio['Time']>=t0)&(cardio['Time']<t1)
+			ny=200
+			img=BPM[isin_pd].reshape(1,-1)
+			if len(seuils_bpm)==0:
+				img=BPM[isin_pd].reshape(-1,1)
+				img=np.tile(img,ny).T
+				x,y=np.meshgrid(np.arange(img.shape[1]),np.arange(img.shape[0]))
+				std=ny/800*(BPM[isin_pd]-30).reshape(1,-1)
+				img=img*np.exp(-(y-ny/2)**2/(2*std**2))
+			#print(BPM[isin_pd])
+			#print(n,len(isin_pd))
+			ax[n].imshow(img,cmap=plt.cm.PuRd,extent=[t0,t1,0,superhyper*1.2],alpha=0.4,aspect='auto')
+	
+	
+		if plot_alt>0:
+			isin_pd=(cardio['Time']>=t0)&(cardio['Time']<t1)
+			if np.any(isin_pd):
+				ax[n].fill_between(cardio['Time'][isin_pd],np.zeros(sum(isin_pd)),ALT[isin_pd],color='Gray',alpha=0.4,edgecolor='w')
+				alt2gly=lambda x:x/plot_alt
+				gly2alt=lambda x:x*plot_alt
+				secax = ax[n].secondary_yaxis('right', functions=(alt2gly, gly2alt),color='Gray')
+				secax.set_xlabel('Altitude [m]')
+		#ax[n].xaxis.grid(True, which='minor')
+# =============================================================================
+# 		Plot Glycemia
+# =============================================================================
+		# hypo/hyper as areas
+		isin_pd=(GluTime_all_pd>=t0)&(GluTime_all_pd<t1)
+# 		#ax[n].fill_between(GluTime_all_pd[isin_pd]-pd.Timedelta(days=n),np.zeros(sum(isin_pd))+hypo,np.zeros(sum(isin_pd))+hyper,color='g',alpha=0.1)
+# 		# Hyper glycemia
+# 		glu_temp=np.copy(GluValue_all[isin_pd,1])
+# 		#print(np.sum(glu_temp<hyper),glu_temp)
+# 		glu_temp[glu_temp<hyper]=np.nan
+# 		ax[n].fill_between(GluTime_all_pd[isin_pd]-pd.Timedelta(days=n),np.zeros(sum(isin_pd))+hyper,glu_temp,color='r',alpha=0.5)
+# 		# Hypo glycemia
+# 		glu_temp=np.copy(GluValue_all[isin_pd,1])
+# 		glu_temp[glu_temp>hypo]=np.nan
+		T=[t0,t1]
+# 		ax[n].fill_between(GluTime_all_pd[isin_pd]-pd.Timedelta(days=n),np.zeros(sum(isin_pd))+hypo,glu_temp,color='b',alpha=0.5)
+		ax[n].plot(T,np.zeros(len(T))+superhyper,'--',linewidth=lw,color='crimson')
+		ax[n].plot(T,np.zeros(len(T))+superhypo,'--',linewidth=lw,color='crimson')
+		ax[n].plot(T,np.zeros(len(T))+hyper,'-.',color='royalblue',linewidth=lw)
+		ax[n].plot(T,np.zeros(len(T))+hypo,'-.',color='royalblue',linewidth=lw)
+		ax[n].plot(GluTime_all_pd[isin_pd]-pd.Timedelta(days=n),GluValue_all[isin_pd,1],'-',linewidth=lw,color='royalblue')
+		ax[n].xaxis.set_major_formatter(xformatter)
+		ax[n].set_ylim([GluValue_all[:,1].min(),GluValue_all[:,1].max()])
+		ax[n].set_ylim([0,superhyper*1.2])
+		ax[n].grid(visible=True)
+		ax[n].set_ylabel('Glycemia [mg/dL]',color='royalblue')
+		ax[n].tick_params(labelcolor='royalblue')
+		ax[n].text(t0,superhyper*1.25,str(GluTime_all_pd[isin_pd][0].strftime('%A %d-%m-%Y')))
+		ax[n].set_xlim([t0,t1])
+
+	
+	ax[n].set_xlabel('Time')
+	if savefig:
+		save_folder='./Patients/'+patient+'/'
+		if not(os.path.isdir(save_folder)):
+			os.mkdir(save_folder)
+		tag0 = pd.Timestamp(start_1).strftime('%Y%m%d_%H%M')
+		tag1 = pd.Timestamp(end_1).strftime('%Y%m%d_%H%M')
+		plt.savefig(save_folder+f'Results_{patient}_{tag0}-{tag1}.pdf',bbox_inches='tight')
+
 def read_glu_pandas(patient,verbose=True):
 	
 	base_dir = os.path.join(".", "Data", patient)
