@@ -209,11 +209,14 @@ def CONGAn(Glu_interp):
 	# 	CONGA_n_mean=np.nan
 	# 	CONGA_n_mean_err=np.nan
 	#if nDays>0:
-	for n in range(1,9): # Hours of shift
-		ndt=60*n; #Equivalent in time resolution
-		Glu_temp=np.hstack((Glu_interp[ndt:],np.zeros(ndt)+np.nan));
-		Dif=Glu_temp-Glu_interp;
-		CONGAn.append(np.nanstd(Dif))
+	for n in range(1,9): # Hours of 
+		try:
+			ndt=60*n; #Equivalent in time resolution
+			Glu_temp=np.hstack((Glu_interp[ndt:],np.zeros(ndt)+np.nan));
+			Dif=Glu_temp-Glu_interp;
+			CONGAn.append(np.nanstd(Dif))
+		except:
+			CONGAn.append(np.nan)
 	return np.array(CONGAn)
 
 # Calculation of hypoglycemias
@@ -1364,8 +1367,11 @@ def calc_glu(patient='GZ2',
 			for k in keys:
 				f.write(k)
 				for idx in IDX_all:
-					string=str(idx[k])
-					f.write(sep+string.replace('\n',''))
+					try:
+						string=str(idx[k])
+						f.write(sep+string.replace('\n',''))
+					except:
+						f.write('error l1374')
 				f.write('\n')
 		print('Results written in '+save_folder)
 	# =============================================================================
