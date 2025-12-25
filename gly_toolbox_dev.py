@@ -1127,7 +1127,10 @@ def calc_glu(patient='GZ2',
 # 	GluTime_all=np.delete(GluTime_all,np.arange(20,60),axis=0)
 # 	GluValue_all=np.delete(GluValue_all,np.arange(20,60),axis=0)
 	
-		
+	# Find typical interval bewteen measures
+	Time_all=date_col_num(GluTime_all)
+	dt_med=np.median(np.diff(Time_all))
+	print('Typical time step between measure is ',int(dt_med*24*60),'min')
 	# Convert units
 	GluValue_all[:, 1] = GluValue_all[:, 1] * conv_factor  # (index 1 because Python is 0-based)
 	
@@ -1138,11 +1141,15 @@ def calc_glu(patient='GZ2',
 	# Date as a panda format
 	GluTime_all_pd=numdate(date_col_num(GluTime_all))
 	
+	dt_med=np.median(np.diff(GluTime_all_pd))
+	#plt.hist(np.diff(GluTime_all_pd))
+	#print('Typical time step between measure is ',dt_med)
 	# Date as a num format
 	GluTime_all_num=date_col_num(GluTime_all)
 	
 	# Tolerance for the absence of measure
-	tlag_Glu = 30 / (60 * 24)  # 30 minutes in days
+	#tlag_Glu = 30 / (60 * 24)  # 30 minutes in days
+	tlag_Glu = 1.5 * dt_med / np.timedelta64(1,'D')  # in days
 	gaps=np.where(np.diff(GluTime_all_num)>tlag_Glu)[0]
 	GluNaN_all=np.ones(Glu_interp_all.shape)
 	for g in gaps:
@@ -1157,7 +1164,7 @@ def calc_glu(patient='GZ2',
 	# add whole period to intervals
 	intervals=np.vstack(([start.strftime('%Y-%m-%d %X'),end.strftime('%Y-%m-%d %X')],intervals))
 	
-	print(intervals)
+	#print(intervals)
 #	file_path_inter = Path('Data')/patient/'interval_file.csv'
 	file_path_inter = './Data/'+patient+'/interval_file.csv'
 	if os.path.exists(file_path_inter):
@@ -1172,7 +1179,7 @@ def calc_glu(patient='GZ2',
 			startint=inter_df['Date_start'][i]+' '+ inter_df['Heure_start'][i]
 			endint=inter_df['Date_end'][i]+' '+ inter_df['Heure_end'][i]
 			intervals=np.vstack((intervals,[startint,endint]))
-		print(intervals)
+		
 		
 		#print("les heures de départ sont :",inter_df['timetemps_start'])
 		#print("les heures de fin sont :",inter_df['timetemps_end'])
@@ -1183,10 +1190,14 @@ def calc_glu(patient='GZ2',
 	
 	IDX_all=[]
 	
+	print('='*20)
 	for interval in intervals:
-		isin=(GluTime_all_pd>pd.to_datetime(interval[0]))&(GluTime_all_pd<=pd.to_datetime(interval[1]))
+		isin=(GluTime_all_pd>pd.to_datetime(interval[0]))&(GluTime_all_pd<pd.to_datetime(interval[1]))
 		GluTime_pd=GluTime_all_pd[isin]
 		Glu_raw=GluValue_all[isin,1]
+		#print(GluTime_pd)
+		# Loop to remove automesure
+		
 		
 		Index_pd=np.arange(len(GluTime_pd))
 		isin_interp=(T_interp_all>datenum(pd.to_datetime(interval[0])))&(T_interp_all<=datenum(pd.to_datetime(interval[1])))
@@ -1198,11 +1209,16 @@ def calc_glu(patient='GZ2',
 			Glu=Glu_interp
 		else:
 			Glu=Glu_raw
+		
 		# Dictionnary of index results
 		IDX={}
 		# =============================================================================
 		IDX['start_time'] = interval[0]
 		IDX['end_time'] = interval[1]
+		print('Interval : ',interval[0],'-',interval[1])
+		duration=pd.to_datetime(interval[1])-pd.to_datetime(interval[0])
+		
+		IDX['duration_hrs'] = duration
 		IDX['glycemia_mean'] = np.nanmean(Glu)
 		IDX['glycemia_min'] = np.nanmin(Glu)
 		IDX['glycemia_max'] = np.nanmax(Glu)
@@ -1211,8 +1227,16 @@ def calc_glu(patient='GZ2',
 		IDX['initial_value'] = Glu[0]
 		
 		# % of good values
+		# old version, computed with interpolated values.
 		IDX['%_good_values'] = 100 * (1- np.sum(np.isnan(GluNaN))/len(GluNaN))
-		
+		# New version, computed with total interval duration and number of values in interval that have the right dt
+		#Do not work because of automesures....
+		#nb_values_expected=duration/dt_med
+		#nb_values_observed=np.diff(GluTime_pd)>dt_med*0.9
+		#print(nb_values_expected)
+		#print(len(Glu_raw))
+		#IDX['%_good_values'] =  100 * (len(Glu_raw)/nb_values_expected)
+		print('Duration: ', duration,'| Good values (%):',int(IDX['%_good_values']))
 		# Other index
 		nval=Glu.shape[0]
 		IDX['glycemia_std_err']=IDX['glycemia_std']/np.sqrt(2*(nval-1)) # Error on std for large nval (web.eecs.umich.edu/~fessler/papers/files/tr/stderr.pdf)
@@ -1354,6 +1378,8 @@ def calc_glu(patient='GZ2',
 					print('{:s} \t \t '.format(key),IDX[key])
 		IDX_all.append(IDX)
 	
+	
+	print('='*20)
 	# =============================================================================
 	# Write CSV result file
 	if (WRITE=='a')|(WRITE=='w'):
@@ -1374,6 +1400,7 @@ def calc_glu(patient='GZ2',
 						f.write('error l1374')
 				f.write('\n')
 		print('Results written in '+save_folder)
+		print('='*20)
 	# =============================================================================
 	if verbose:
 		return IDX_all
