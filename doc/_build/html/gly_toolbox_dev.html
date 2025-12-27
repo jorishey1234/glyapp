@@ -47,20 +47,18 @@
 </dd>
 <dt>WRITE<span class="classifier">‘a’, ‘w’</span></dt><dd><p>‘a’ append or ‘r’ replace result file</p>
 </dd>
+<dt>encoding<span class="classifier">str</span></dt><dd><p>(old) Used to force glycemic file encoding</p>
+</dd>
+<dt>verbose<span class="classifier">True/False</span></dt><dd><p>To display more results</p>
+</dd>
+<dt>interp<span class="classifier">False/True</span></dt><dd><p>To compute statistics on interpolated data rather than raw sensor data</p>
+</dd>
 </dl>
-</section>
-<section id="example">
-<h2>Example<a class="headerlink" href="#example" title="Link to this heading">¶</a></h2>
-<p>Examples can be given using either the <code class="docutils literal notranslate"><span class="pre">Example</span></code> or <code class="docutils literal notranslate"><span class="pre">Examples</span></code>
-sections. Sections support any reStructuredText formatting, including
-literal blocks:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ calc_glu(patient=&#39;GZ2&#39;,
-                    GluCible=np.array([[70,140],[70,180],[54,200],[60,300]])
-</pre></div>
-</div>
-<p>Section breaks are created with two blank lines. Section breaks are also
-implicitly created anytime a new section starts. Section bodies <em>may</em> be
-indented:</p>
+<dl class="field-list simple">
+<dt class="field-odd">returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bool</p>
+</dd>
+</dl>
 </section>
 <section id="returns">
 <h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
@@ -68,6 +66,17 @@ indented:</p>
 <dt>bool</dt><dd><p>if result is successfull</p>
 </dd>
 </dl>
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Link to this heading">¶</a></h2>
+<p>Run with default parameters as</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_glu</span><span class="p">(</span><span class="n">patient</span><span class="o">=</span><span class="s1">&#39;GZ2&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Provide a prescribed interval</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_glu</span><span class="p">(</span><span class="n">patient</span><span class="o">=</span><span class="s1">&#39;GZ2&#39;</span><span class="p">,</span><span class="n">intervals</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;2014-05-12 08:00&quot;</span><span class="p">,</span><span class="s2">&quot;2014-05-14 08:00&quot;</span><span class="p">]])</span>
+</pre></div>
+</div>
 </section>
 </dd></dl>
 

@@ -38,10 +38,7 @@
 <section id="without-python-installation">
 <h2>Without python installation<a class="headerlink" href="#without-python-installation" title="Link to this heading">¶</a></h2>
 <p>Go to <a class="reference external" href="https://jupyter.org/try-jupyter/lab/">https://jupyter.org/try-jupyter/lab/</a></p>
-<p>Create a folder Data where to upload glycemic sensors data from each patient</p>
-<p>Create a folder Patients where the results will be saved for each patient</p>
-<p>Make a new notebook</p>
-<p>Copy the following code</p>
+<p>Make a new notebook, and copy the following code in the first section. Then run the section with Shift+Enter keys</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">re</span><span class="o">,</span> <span class="nn">pyodide</span><span class="o">,</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span><span class="o">,</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span><span class="o">,</span> <span class="nn">scipy.ndimage</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">timedelta</span><span class="p">,</span><span class="n">datetime</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span><span class="o">,</span> <span class="nn">matplotlib.dates</span> <span class="k">as</span> <span class="nn">mdates</span>
@@ -49,9 +46,27 @@
 <span class="n">exec</span><span class="p">(</span><span class="n">pyodide</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">open_url</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 </pre></div>
 </div>
+<p>Start a new section, clicking on +, then if running for the first time, prepare the local environment folder structure with the command :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">make_environment</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Download the example patient case ‘GZ2’ and drag/drop its folder in the ./Data/ folder in try-jupyter</p>
+<p>Then you should be able to run</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_glu</span><span class="p">(</span><span class="s1">&#39;GZ2&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
-<section id="id1">
-<h2>Without python installation<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<section id="with-python-installation">
+<h2>With python installation<a class="headerlink" href="#with-python-installation" title="Link to this heading">¶</a></h2>
+<p>Make sure you have the following packages installed. For instance with pip</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">sys</span><span class="p">,</span> <span class="n">os</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">pyodide</span><span class="p">,</span> <span class="n">numpy</span><span class="p">,</span> <span class="n">pandas</span><span class="p">,</span> <span class="n">scipy</span><span class="p">,</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">matplotlib</span>
+</pre></div>
+</div>
+<p>then, in python run</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">glyapp</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">calc_glu</span><span class="p">(</span><span class="s1">&#39;GZ2&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 </section>
 

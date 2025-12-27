@@ -1,5 +1,5 @@
 Installation
-===============
+============
 
 .. autofunction:: .
 
@@ -8,13 +8,7 @@ Without python installation
 
 Go to https://jupyter.org/try-jupyter/lab/
 
-Create a folder Data where to upload glycemic sensors data from each patient
-
-Create a folder Patients where the results will be saved for each patient
-
-Make a new notebook
-
-Copy the following code
+Make a new notebook, and copy the following code in the first section. Then run the section with Shift+Enter keys
 ::
 	import sys, os, re, pyodide, numpy as np, pandas as pd, scipy.ndimage
 	from datetime import date,time,timedelta,datetime
@@ -22,7 +16,25 @@ Copy the following code
 	url='https://raw.githubusercontent.com/jorishey1234/glyapp/refs/heads/main/gly_toolbox_dev.py'
 	exec(pyodide.http.open_url(url).read())
 
+Start a new section, clicking on +, then if running for the first time, prepare the local environment folder structure with the command :
 
+>>> make_environment()
 
-Without python installation
----------------------------
+Download the example patient case 'GZ2' and drag/drop its folder in the ./Data/ folder in try-jupyter
+
+Then you should be able to run 
+
+>>> calc_glu('GZ2')
+
+With python installation
+------------------------
+
+Make sure you have the following packages installed. For instance with pip
+::
+	pip install sys, os, re, pyodide, numpy, pandas, scipy, datetime, matplotlib
+
+then, in python run 
+
+>>> from glyapp import *
+>>> calc_glu('GZ2')
+
