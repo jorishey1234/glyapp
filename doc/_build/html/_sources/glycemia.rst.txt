@@ -1,0 +1,36 @@
+Glycemic Indices
+========================
+
+.. autofunction:: gly_toolbox_dev.calc_glu
+
+Example
+-------
+Run with default parameters as
+
+>>> calc_glu(patient='GZ2')
+
+Provide a prescribed interval
+
+>>> calc_glu(patient='GZ2',intervals=[["2014-05-12 08:00","2014-05-14 08:00"]])
+
+
+List of indices implemented
+---------------------------
+
+MAGE
+^^^^
+
+A description and ref
+
+CONGAn
+^^^^^^
+
+A description and ref
+
+
+Other
+^^^^^^
+
+A description and ref
+
+
