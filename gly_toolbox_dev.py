@@ -1,35 +1,46 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Aug 24 15:25:03 2025
 
-@author: joris
-"""
+# =============================================================================
+# LIBRARIES
+# =============================================================================
+
+import sys
+import os
+import re
 import glob
 import numpy as np
-#import random
 import pandas as pd
-#import datetime
 from datetime import date,time, timedelta, datetime
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-#from oct2py import octave
 import scipy.ndimage
-import sys
-import os
-import sys
-import re
-from datetime import date,time, timedelta
+
+# =============================================================================
+# DEFAULT VARIABLES
+# =============================================================================
 
 version='dev version'
+print('Loading GlyApp '+version)
+
+
 red='\x1b[41m'
 orange='\x1b[43m'
 green='\x1b[42m'
 black='\x1b[40m'
 black='\x1b[47m'
 
-print('Loading GlyApp '+version)
-# Get the encoding of the file in relation to the file type
+
+
+#: Path where raw sensor data are kept
+DATA_DIR='./Data/' 
+#: Path where Glyapp results are kept
+RESULT_DIR='./Patients/'
+#: Correspondance filename betwwen sensors
+SENSORS_FILENAME='./filename_sensors.csv' 
+ #: Sensors library filename
+SENSORS_LIBRARY='./sensor_library.csv'
+
 FILE_ENCODING = {
 	'capteur_medtronics': 'utf-16',
 	'capteur_ipro': 'utf-16le',
@@ -47,9 +58,135 @@ FILE_ENCODING = {
 	'sport': 'iso8859',
 }
 
+#: Default Correspondance between glycemic data filename and sensor model
+FILENAMES = ('"Filename","Sensor"\n'+ 
+'"Capteur_freestyle.txt","freeStyle"\n'+
+'"Capteur_freestyle_pro.csv","freeStyle_pro_ancien"\n'+
+'"Capteur_standard.csv","standard"\n'+
+'"Capteur.csv","ipro2"\n'+
+'"Capteur_valeur.csv","ipro2_valeur"\n'+
+'"Capteur.txt","dexcom"\n'+
+'"CLARITY_CANADA_EXPORT.csv","dexcom_canada"\n'+
+'"MEDTRONIC_CANADA_EXPORT.csv","medtronic_canada"\n'+
+'"DIASEND_CANADA_EXPORT.csv","diasend_canada"\n'+
+'"TIDEPOOL_CANADA_EXPORT.csv","tidepool_canada"')
+
+#: Default Format of sensor files to open in python
+LIBRARY = (
+'"Sensor","encoding","delimiter","skiprows","col_date","col_time","col_datetime","dayfirst","col_value","units"\n'+
+'"freeStyle","utf-8","\t","1","","","Heure","FALSE","Historique du taux de glucose (mg/dL)","mg/dL"\n'+
+'"freeStyle_pro_ancien","utf-8",";|\t","2","","","Horodatage de l'+"'"+'appareil","TRUE","Historique de la glycémie mg/dL","mg/dL"\n'+
+'"standard","utf-8",";|s","0","Date (jj/mm/aaaa)","Heure(hh:mm:ss)","","TRUE","Capteur de glycemie (mg/dl)","mg/dL"\n'+
+'"ipro2","utf-16le","\t","11","Date","Heure","Horodatage","TRUE","Capteur de glycémie (mg/dl)","mg/dL"\n'+
+'"dexcom","utf-8","\t","0","","","GlucoseInternalTime","TRUE","GlucoseValue","mg/dL"\n'+
+'"dexcom_canada","utf-8",",","0","","","Timestamp (YYYY-MM-DDThh:mm:ss)","FALSE","Glucose Value (mmol/L)","mmol/L"\n'+
+'"medtronic_canada","utf-8",";","6","Date","Time","","TRUE","Sensor Glucose (mmol/L)","mmol/L"\n'+
+'"diasend_canada","utf-8",";","4","","","Time","TRUE","mmol/L","mmol/L"\n'+
+'"tidepool_canada","utf-8",";","0","","","Local Time","FALSE","Value","mmol/L"\n'+
+'"ipro2_valeur","utf-16le","\t","11","Date","Heure","Horodatage","TRUE","Valeur de capteur (mg/dl)","mg/dL"')
+
+# =============================================================================
+# GLYAPP FUNCTIONS
+# =============================================================================
+
+def init_environment(patient='XX'):
+	"""
+	Prepare the local folder structure for the first time where data has to be stored
+	and results are written.
+	
+	Create the sensor database if the file do not exist.
+	
+	Create a test case with synthetic data for patient name XX.
+	
+	Parameters
+	----------
+	patient : str, optional
+		Codename of the patient to create. The default is 'XX'.
+		
+	Returns
+	-------
+	None.
+
+	"""
+	if not os.path.exists(DATA_DIR):
+		os.makedirs(DATA_DIR)
+	if not os.path.exists(RESULT_DIR):
+		os.makedirs(RESULT_DIR)
+
+	print('Sensors data of patient '+patient+ ' has to be placed in',DATA_DIR+patient+'/')
+	print('GlyApp Output of patient '+patient+ ' will be written in',RESULT_DIR+patient+'/')
+	
+	if not os.path.exists(SENSORS_FILENAME):
+		with open(SENSORS_FILENAME,'w') as f:
+			f.write(FILENAMES)
+		print('Default sensor filename written in',SENSORS_FILENAME)
+			
+	if not os.path.exists(SENSORS_LIBRARY):
+		with open(SENSORS_LIBRARY,'w') as f:
+			f.write(LIBRARY)
+		print('Default sensor library written in',SENSORS_LIBRARY)
+		
+	make_synthetic_gly_data(patient)
+	print('Test patient ',patient,' created')
+	
+	#% Write defaut patient 
+	print('================== GlyApp is ready ! ==================')
+
+def make_synthetic_gly_data(patient='XX',ndays=30,dt=15,
+							gly_mean=150,gly_std=150,gly_corr=30,
+							start_date="2025-01-01",seed=0):
+	"""
+	Return a CSV file with synthetic glycemic data time series
+
+	Parameters
+	----------
+	patient : str, optional
+		Codename of patient to create. The default is 'XX'.
+	ndays : int, optional
+		Duration f the time serie in days. The default is 30.
+	dt : int, optional
+		Measure intervals in minuts. The default is 15.
+	gly_mean : float, optional
+		Mean glycemia. The default is 150.
+	gly_std : float, optional
+		Standard deviation of glycemia. The default is 150.
+	gly_corr : float, optional
+		Time correlation of glycemia in min. The default is 30.
+	start_date : str, optional
+		Start date of the timeserie. The default is "2025-01-01".
+	seed : int, optional
+		Seed for random generator.
+
+	Returns
+	-------
+	None.
+
+	"""
+	
+	if not os.path.exists(DATA_DIR+patient):
+		os.makedirs(DATA_DIR+patient)
+	
+	np.random.seed(seed)
+	t=pd.to_timedelta(np.arange(0, 24*60*ndays, 15), unit='min')+pd.Timestamp(start_date)
+	#print(time)
+	glu=np.random.randn(len(t))
+	glu=scipy.ndimage.gaussian_filter1d(glu,gly_corr/dt,mode='wrap')
+	glu=glu*gly_std+gly_mean
+	df = pd.DataFrame({'datetime' : t})
+	df['Date (jj/mm/aaaa)'] = df['datetime'].apply(lambda x: x.strftime('%d/%m/%Y'))
+	df['Heure(hh:mm:ss)'] = df['datetime'].apply(lambda x: x.strftime('%H:%M:%S'))
+	df['Capteur de glycemie (mg/dl)']=glu
+	df[['Date (jj/mm/aaaa)','Heure(hh:mm:ss)','Capteur de glycemie (mg/dl)']].to_csv(DATA_DIR+patient+'/Capteur_standard.csv',date_format='DD/MM/YYYY HH:MM:SS',index=False,sep=';')
+	return None
+
 def test_all():
-	# test all folder in DATA
-	base='./Data/'
+	"""
+	
+	Function to test all the glycemic sensor reading of all folders present in DATA
+	Show errors of reading in red
+	
+	"""
+	base=DATA_DIR
 	folders=glob.glob(base+'*')
 	score=0
 	for f in folders:
@@ -62,16 +199,16 @@ def test_all():
 	return None
 	
 def read_libraries(delimiter=',',encoding='utf-8'):
-	sensors=pd.read_csv('sensor_library.csv',delimiter=delimiter,encoding=encoding)
-	filenames=pd.read_csv('filename_sensors.csv',delimiter=delimiter)
+	sensors=pd.read_csv(SENSORS_LIBRARY,delimiter=delimiter,encoding=encoding)
+	filenames=pd.read_csv(SENSORS_FILENAME,delimiter=delimiter)
 	return filenames,sensors
 
 def import_libraries_pyodide():
 	url = 'https://docs.google.com/spreadsheets/d/1KH61giiVdZmQJ8h97awgeSCJKCYvDwdM6-nsSYvjSxc/gviz/tq?tqx=out:csv&sheet={sensor_library}'
-	with open('sensor_library.csv','w') as f:
+	with open(SENSORS_LIBRARY,'w') as f:
 		f.write(pyodide.http.open_url(url).read())
 	url = 'https://docs.google.com/spreadsheets/d/1Ya7Y9joet36BuhjC7pecI9VnejrPgPFFIm6Z4mo29IU/gviz/tq?tqx=out:csv&sheet={sensor_library}'
-	with open('filename_sensors.csv','w') as f:
+	with open(SENSORS_FILENAME,'w') as f:
 		f.write(pyodide.http.open_url(url).read())
 	return None
 
@@ -81,9 +218,9 @@ def conversion_factor(units):
 def import_libraries_urllib():
 	import urllib
 	url = 'https://docs.google.com/spreadsheets/d/1KH61giiVdZmQJ8h97awgeSCJKCYvDwdM6-nsSYvjSxc/gviz/tq?tqx=out:csv&sheet={sensor_library}'
-	urllib.request.urlretrieve(url,'sensor_library.csv')
+	urllib.request.urlretrieve(url,SENSORS_LIBRARY)
 	url = 'https://docs.google.com/spreadsheets/d/1Ya7Y9joet36BuhjC7pecI9VnejrPgPFFIm6Z4mo29IU/gviz/tq?tqx=out:csv&sheet={sensor_library}'
-	urllib.request.urlretrieve(url,'filename_sensors.csv')
+	urllib.request.urlretrieve(url,SENSORS_FILENAME)
 	return None
 
 def conversion_factor(units):
@@ -147,6 +284,30 @@ def numdate(n):
 
 
 def calc_MAGE(Glu_interp,Time,nstd,Tav):
+	"""
+	Function to compute the mAGE index on interpolated glycemic data
+
+	Parameters
+	----------
+	Glu_interp : (n) array of float
+		Glycemic time serie, equally sampled in time
+	Time : (n) array of float
+		Corresponding time array
+	nstd : TYPE
+		DESCRIPTION.
+	Tav : TYPE
+		Moving average duration
+
+	Returns
+	-------
+	Amplitude_real : TYPE
+		Array of amplitude of glycemic variabilities between peaks
+	Time_Amplitude : TYPE
+		Array of time stamp between peaks
+	idAll_filt : TYPE
+		Index of peaks
+
+	"""
 	# MAGE
 	Glu_std=np.nanstd(Glu_interp)
 	
@@ -193,6 +354,20 @@ def calc_MAGE(Glu_interp,Time,nstd,Tav):
 
 
 def CONGAn(Glu_interp):
+	"""
+	Function to compute the CONGAn index
+
+	Parameters
+	----------
+	Glu_interp : TYPE
+		DESCRIPTION.
+
+	Returns
+	-------
+	TYPE
+		DESCRIPTION.
+
+	"""
 	# # CONGAn, computed from start_Hour to start_Hour each day
 	CONGAn=[]
 	# if nDays>0:
@@ -265,7 +440,7 @@ def calc_hypo(Glu_interp,T_interp,time_hypo,glu_hypo):
 
 
 
-def plot_patient(patient='GZ2',encoding='utf-8',
+def plot_patient(patient='XX',encoding='utf-8',
 				 start=None,
 				 end=None,
 				 start_Hour=7,
@@ -281,7 +456,55 @@ def plot_patient(patient='GZ2',encoding='utf-8',
 				 plot_alt=0,
 				 savefig=True,
 				 lw=2):
-	
+	"""
+	Plot the patient data on a dayly basis
+
+	Parameters
+	----------
+	patient : TYPE, optional
+		DESCRIPTION. The default is 'XX'.
+	encoding : TYPE, optional
+		DESCRIPTION. The default is 'utf-8'.
+	start : TYPE, optional
+		DESCRIPTION. The default is None.
+	end : TYPE, optional
+		DESCRIPTION. The default is None.
+	start_Hour : TYPE, optional
+		DESCRIPTION. The default is 7.
+	hypo : TYPE, optional
+		DESCRIPTION. The default is 70.
+	hyper : TYPE, optional
+		DESCRIPTION. The default is 180.
+	superhypo : TYPE, optional
+		DESCRIPTION. The default is 54.
+	superhyper : TYPE, optional
+		DESCRIPTION. The default is 250.
+	plot_acc : TYPE, optional
+		DESCRIPTION. The default is False.
+	filt_acc : TYPE, optional
+		DESCRIPTION. The default is 1.
+	seuils_acc : TYPE, optional
+		DESCRIPTION. The default is [0,100,250,500,1000,2000].
+	plot_temp : TYPE, optional
+		DESCRIPTION. The default is 0.
+	plot_bpm : TYPE, optional
+		DESCRIPTION. The default is False.
+	filt_bpm : TYPE, optional
+		DESCRIPTION. The default is 1.
+	seuils_bpm : TYPE, optional
+		DESCRIPTION. The default is [20,300].
+	plot_alt : TYPE, optional
+		DESCRIPTION. The default is 0.
+	savefig : TYPE, optional
+		DESCRIPTION. The default is True.
+	lw : TYPE, optional
+		DESCRIPTION. The default is 2.
+
+	Returns
+	-------
+	None.
+
+	"""
 	xformatter = mdates.DateFormatter('%H:%M')
 	GluTime_all,GluValue_all=read_Glu(patient,encoding=encoding)
 	T_interp_all=np.arange(date_col_num(GluTime_all[0,:].reshape(1,-1)),date_col_num(GluTime_all[-1,:].reshape(1,-1)),1/(60*24)) # reinterpolate data on 1 min intervals
@@ -439,7 +662,7 @@ def plot_patient(patient='GZ2',encoding='utf-8',
 	
 	ax[n].set_xlabel('Time')
 	if savefig:
-		save_folder='./Patients/'+patient+'/'
+		save_folder=RESULT_DIR+patient+'/'
 		if not(os.path.isdir(save_folder)):
 			os.mkdir(save_folder)
 		plt.savefig(save_folder+'Results_'+patient+'.pdf',bbox_inches='tight')
@@ -599,7 +822,7 @@ def short_plot_patient(patient='GZ2',encoding='utf-8',
 	
 	ax[n].set_xlabel('Time')
 	if savefig:
-		save_folder='./Patients/'+patient+'/'
+		save_folder=RESULT_DIR+patient+'/'
 		if not(os.path.isdir(save_folder)):
 			os.mkdir(save_folder)
 		tag0 = pd.Timestamp(start_1).strftime('%Y%m%d_%H%M')
@@ -1025,9 +1248,9 @@ def read_glu_octave(patient,encoding='utf-8'):
 def read_cardio(patient):
 	import glob
 	print("cardio")
-	files=glob.glob('./Data/'+patient+'/V800_*.CSV')
+	files=glob.glob(DATA_DIR+patient+'/V800_*.CSV')
 	for i,filename in enumerate(files):
-		#filename='./Data/'+patient+'/V800_12_2021-04-26_09-43-48.CSV'
+		#filename=DATA_DIR+patient+'/V800_12_2021-04-26_09-43-48.CSV'
 		# Read first start time
 		first = pd.read_csv(filename, nrows=1, sep=',')
 		start_datetime=pd.to_datetime(first['Date'].iloc[0]+' '+first['Start time'].iloc[0],dayfirst=True)
@@ -1047,7 +1270,7 @@ def read_cardio(patient):
 
 def read_accelero(patient):
 	print("accelero_gt1m method")
-	filename='./Data/'+patient+'/Accelero.csv'
+	filename=DATA_DIR+patient+'/Accelero.csv'
 	skiprows=10
 	separator=','
 	# using attribute "usecols" to set the column that will be used because the last column cause problems
@@ -1062,13 +1285,42 @@ def read_accelero(patient):
 	accelero['Norm']=np.sqrt(accelero[' Axis1']**2.+accelero['Axis2']**2.+accelero['Axis3']**2.)
 	return accelero
 
-def calc_glu(patient='GZ2',
+def calc_glu(patient='XX',
 			 GluCible=np.array([[70,140],[70,180],[54,200],[60,300]]),
 			 intervals=np.array([]).reshape(-1,2),
 			 WRITE='a',
 			 encoding='utf-8',
 			 verbose=False,
 			 interp=False):
+	
+	"""
+	
+	Function to compute glycemic statistics of a patient glycemic time series, located in the folder **DATA_DIR**/**patient**/
+	
+	Parameters
+	----------
+	patient : str
+		Name of the folder containing all patient's data in the **DATA_DIR** folder, which is ./Data/ by default. 
+	GluCible : array
+		(n,2) array containing the values of glycemic levels for hypo and hyper glycemia
+	WRITE : 'a', 'w'
+		'a' append or 'r' replace result file
+	encoding : str
+		(old) Used to force glycemic file encoding
+	verbose : True/False
+		To display more results
+	interp : False/True
+		To compute statistics on interpolated data rather than raw sensor data
+	
+	:returns:
+		Bool
+	
+	Returns
+	-------
+	bool
+		if result is successfull
+	
+	"""
 # 	patient='GZ2';
 # 	GluCible=np.array([[70,140],[70,180],[54,200],[60,300]]);
 # 	intervals=np.array([]).reshape(-1,2)
@@ -1166,7 +1418,7 @@ def calc_glu(patient='GZ2',
 	
 	#print(intervals)
 #	file_path_inter = Path('Data')/patient/'interval_file.csv'
-	file_path_inter = './Data/'+patient+'/interval_file.csv'
+	file_path_inter = DATA_DIR+patient+'/interval_file.csv'
 	if os.path.exists(file_path_inter):
 		inter_df = pd.read_csv(file_path_inter, skiprows=0, sep=';')
 		inter_df['Date_start'] = inter_df['Date_start'].astype('string')
@@ -1384,7 +1636,7 @@ def calc_glu(patient='GZ2',
 	# Write CSV result file
 	if (WRITE=='a')|(WRITE=='w'):
 		sep=';'
-		save_folder='./Patients/'+patient+'/'
+		save_folder=RESULT_DIR+patient+'/'
 		if not(os.path.isdir(save_folder)):
 			os.mkdir(save_folder)
 		with open(save_folder+'result_'+patient+'.csv', WRITE) as f:
