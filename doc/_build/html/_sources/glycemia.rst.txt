@@ -14,13 +14,49 @@ Run with default parameters as
 
 >>> calc_glu(patient='XX')
 
-Provide a prescribed interval
+.. hint:: Si on a déjà fait tourner le code pour ce patient sur un autre intervalle, par défaut cela ajoute les lignes de résultats après les premières lignes (fonction append). We can overwrite the data by specyfying WRITE='w'.
+
+>>> calc_glu(patient='XX',WRITE='w')
+
+Provide one or several prescribed time intervals to compute statistics :
 
 >>> calc_glu(patient='XX',intervals=[["2025-01-12 08:00","2025-01-14 08:00"]])
+
+.. hint:: If an interval file named interval_file.csv exist in the **patient** folder, it is added to the intervals to compute statistics.
 
 
 List of indices implemented
 ---------------------------
+
+Basic Statistics
+^^^^^^^^^^^^^^^^
+Min,Max,Mean,Std,% of good values, Area below curve
+
+JIndex, LBGI, HBGI, BGRI, GRADE_score_i, EUGLY_cont_i
+
+
+M_Index [#M]_, ADRR
+
+
+Hypoglycemia events
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Time, Duration, Frequency of short and prolongated hypoglycemia events
+
+Short hypoglycemia is defined by:
+""""""""""""""""""""""""""""""""""""
+.. autodata:: gly_toolbox_dev.time_hypo_short
+.. autodata:: gly_toolbox_dev.gly_hypo_short
+
+Prolongated hypoglycemia is defined by:
+"""""""""""""""""""""""""""""""""""""""
+.. autodata:: gly_toolbox_dev.time_hypo_prol
+.. autodata:: gly_toolbox_dev.gly_hypo_prol
+
+Function is called by:
+""""""""""""""""""""""
+.. autofunction:: gly_toolbox_dev.calc_hypo
+
 
 MAGE
 ^^^^
@@ -36,9 +72,9 @@ A description and ref
 
 .. autofunction:: gly_toolbox_dev.CONGAn
 
-Other
-^^^^^^
 
-A description and ref
+.. rubric:: References
+
+.. [#M] Schlichtkrull et al., Mirouze et al.
 
 

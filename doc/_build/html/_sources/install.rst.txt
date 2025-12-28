@@ -1,12 +1,17 @@
 Installation
 ============
 
-Without installing python
----------------------------
+GlyApp on your Web Browser
+--------------------------
 
-Go to https://jupyter.org/try-jupyter/lab/
+On your favorite browser (I recommend Firefox), go to https://jupyter.org/try-jupyter/lab/
 
-Make a new notebook, and copy the following code in the first section. Then run the section with Shift+Enter keys 
+Start a new notebook by clicking on *Python Pyodide*
+
+.. image:: pyodide.png
+
+.. |run| image:: run.png
+Copy the following code in the first section. Run the section with Shift+Enter keys or clicking on the button |run|
 ::
 	import sys, os, re, pyodide, numpy as np, pandas as pd, scipy.ndimage
 	from datetime import date,time,timedelta,datetime
@@ -14,8 +19,18 @@ Make a new notebook, and copy the following code in the first section. Then run 
 	url='https://raw.githubusercontent.com/jorishey1234/glyapp/refs/heads/main/gly_toolbox_dev.py'
 	exec(pyodide.http.open_url(url).read())
 
+After GlyApp is loaded (it can take some time depending on your computer and connection), you should get the answer :
+::
+	Loading GlyApp dev version
+	GlyApp successfully loaded !
 
-Start a new section, clicking on +, then if running for the first time, prepare the local environment folder structure with the command :
+.. hint:: You can create as much notebook as you want, for instance one per patient or by study if necessary. Copy the header code all the time to initialize the notebook. When the browser is closed, the notebook is saved automatically in the Browser history. To avoid loosing data, it can be good to externaly save notebooks on a local disk from time to time (Right click on the notebook, then *Download*). 
+
+.. |add| image:: add.png
+
+Start a new section in the notebook, clicking on |add|. 
+
+If running for the first time, prepare the local environment folder structure and files with the command :
 
 >>> init_environment()
 
@@ -23,11 +38,12 @@ Then you should be able to run glycemic statistics
 
 >>> calc_glu('XX')
 
-or get a plot on a week interval
+or get a plot on weekly intervals
 
 >>> plot_patient('XX')
 
-Any other patient data can now be added by drag/drop a PATIENT_NAME folder in the DATA_DIR folder in try-jupyter.
+.. hint:: Any other patient data can now be added in try-jupyter by drag/drop a **patient** folder containing sensor data in the **DATA_DIR**, which is by default *./Data/patient/*. As for the notebooks, the data is saved automatically when closing the browser, until you clear the history. To avoid loosing data, keep a local version of your **DATA_DIR** folder, and regularly download the results in the **RESULTS_DIR** folder (right click on the result file, then *Download*).  
+ 
 
 
 With python (v3.12) installed locally

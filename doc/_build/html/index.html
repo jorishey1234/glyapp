@@ -46,6 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="sensors.html">Sensors Database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="glycemia.html">Statistics of Glycemia</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="other.html">Other functions</a></li>
 </ul>
 
         </div>
@@ -74,30 +75,82 @@
              
   <section id="glyapp-python-documentation">
 <h1>GlyApp Python Documentation<a class="headerlink" href="#glyapp-python-documentation" title="Link to this heading"></a></h1>
-<p>Blablabla glyapp
-Add your content using <code class="docutils literal notranslate"><span class="pre">reStructuredText</span></code> syntax. See the
-<a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html">reStructuredText</a>
-documentation for details.</p>
+<p>GlyApp is a python application to compute many standard glycemic indices on commercial sensors.
+It was created and is currently maintained by Elsa Heyman and Joris Heyman.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install.html#without-installing-python">Without installing python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#glyapp-on-your-web-browser">GlyApp on your Web Browser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#with-python-v3-12-installed-locally">With python (v3.12) installed locally</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#glyapp-file-structure">GlyApp File Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#glyapp-file-structure">GlyApp File Structure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="install.html#default-environment-variables">Default Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install.html#setting-environment-folders-and-files">Setting Environment Folders and Files</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sensors.html">Sensors Database</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="sensors.html#recognized-glycemic-sensors-formats">Recognized Glycemic Sensors formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sensors.html#recognized-glycemic-sensors-formats">Recognized Glycemic Sensors formats</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sensors.html#gly_toolbox_dev.SENSORS_FILENAME"><code class="docutils literal notranslate"><span class="pre">SENSORS_FILENAME</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensors.html#gly_toolbox_dev.SENSORS_LIBRARY"><code class="docutils literal notranslate"><span class="pre">SENSORS_LIBRARY</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="sensors.html#accelerometer-sensor-format">Accelerometer sensor format</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="glycemia.html">Statistics of Glycemia</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="glycemia.html#compute-all-indices">Compute All Indices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="glycemia.html#list-of-indices-implemented">List of indices implemented</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glycemia.html#compute-all-indices">Compute All Indices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="glycemia.html#gly_toolbox_dev.calc_glu"><code class="docutils literal notranslate"><span class="pre">calc_glu()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="glycemia.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="glycemia.html#list-of-indices-implemented">List of indices implemented</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="glycemia.html#basic-statistics">Basic Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="glycemia.html#hypoglycemia-events">Hypoglycemia events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="glycemia.html#mage">MAGE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="glycemia.html#congan">CONGAn</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="plot.html#gly_toolbox_dev.plot_patient"><code class="docutils literal notranslate"><span class="pre">plot_patient()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="other.html">Other functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.CONGAn"><code class="docutils literal notranslate"><span class="pre">CONGAn()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.DATA_DIR"><code class="docutils literal notranslate"><span class="pre">DATA_DIR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.FILENAMES"><code class="docutils literal notranslate"><span class="pre">FILENAMES</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.LIBRARY"><code class="docutils literal notranslate"><span class="pre">LIBRARY</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.RESULT_DIR"><code class="docutils literal notranslate"><span class="pre">RESULT_DIR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.SENSORS_FILENAME"><code class="docutils literal notranslate"><span class="pre">SENSORS_FILENAME</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.SENSORS_LIBRARY"><code class="docutils literal notranslate"><span class="pre">SENSORS_LIBRARY</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.calc_MAGE"><code class="docutils literal notranslate"><span class="pre">calc_MAGE()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.calc_glu"><code class="docutils literal notranslate"><span class="pre">calc_glu()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.calc_hypo"><code class="docutils literal notranslate"><span class="pre">calc_hypo()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.clean_data"><code class="docutils literal notranslate"><span class="pre">clean_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.conversion_factor"><code class="docutils literal notranslate"><span class="pre">conversion_factor()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.date_col_num"><code class="docutils literal notranslate"><span class="pre">date_col_num()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.datenum"><code class="docutils literal notranslate"><span class="pre">datenum()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.gly_hypo_prol"><code class="docutils literal notranslate"><span class="pre">gly_hypo_prol</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.gly_hypo_short"><code class="docutils literal notranslate"><span class="pre">gly_hypo_short</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.import_libraries_pyodide"><code class="docutils literal notranslate"><span class="pre">import_libraries_pyodide()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.import_libraries_urllib"><code class="docutils literal notranslate"><span class="pre">import_libraries_urllib()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.init_environment"><code class="docutils literal notranslate"><span class="pre">init_environment()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.make_synthetic_gly_data"><code class="docutils literal notranslate"><span class="pre">make_synthetic_gly_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.numdate"><code class="docutils literal notranslate"><span class="pre">numdate()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.plot_patient"><code class="docutils literal notranslate"><span class="pre">plot_patient()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.read_Glu"><code class="docutils literal notranslate"><span class="pre">read_Glu()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.read_accelero"><code class="docutils literal notranslate"><span class="pre">read_accelero()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.read_cardio"><code class="docutils literal notranslate"><span class="pre">read_cardio()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.read_glu_octave"><code class="docutils literal notranslate"><span class="pre">read_glu_octave()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.read_glu_pandas"><code class="docutils literal notranslate"><span class="pre">read_glu_pandas()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.read_libraries"><code class="docutils literal notranslate"><span class="pre">read_libraries()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.short_plot_patient"><code class="docutils literal notranslate"><span class="pre">short_plot_patient()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.sort_times"><code class="docutils literal notranslate"><span class="pre">sort_times()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.test_all"><code class="docutils literal notranslate"><span class="pre">test_all()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.time_hypo_prol"><code class="docutils literal notranslate"><span class="pre">time_hypo_prol</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="other.html#gly_toolbox_dev.time_hypo_short"><code class="docutils literal notranslate"><span class="pre">time_hypo_short</span></code></a></li>
 </ul>
 </li>
 </ul>

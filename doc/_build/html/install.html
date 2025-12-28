@@ -44,7 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#without-installing-python">Without installing python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#glyapp-on-your-web-browser">GlyApp on your Web Browser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#with-python-v3-12-installed-locally">With python (v3.12) installed locally</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#glyapp-file-structure">GlyApp File Structure</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#default-environment-variables">Default Environment Variables</a><ul>
@@ -64,6 +64,7 @@
 <li class="toctree-l1"><a class="reference internal" href="sensors.html">Sensors Database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="glycemia.html">Statistics of Glycemia</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="other.html">Other functions</a></li>
 </ul>
 
         </div>
@@ -92,10 +93,12 @@
              
   <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
-<section id="without-installing-python">
-<h2>Without installing python<a class="headerlink" href="#without-installing-python" title="Link to this heading"></a></h2>
-<p>Go to <a class="reference external" href="https://jupyter.org/try-jupyter/lab/">https://jupyter.org/try-jupyter/lab/</a></p>
-<p>Make a new notebook, and copy the following code in the first section. Then run the section with Shift+Enter keys</p>
+<section id="glyapp-on-your-web-browser">
+<h2>GlyApp on your Web Browser<a class="headerlink" href="#glyapp-on-your-web-browser" title="Link to this heading"></a></h2>
+<p>On your favorite browser (I recommend Firefox), go to <a class="reference external" href="https://jupyter.org/try-jupyter/lab/">https://jupyter.org/try-jupyter/lab/</a></p>
+<p>Start a new notebook by clicking on <em>Python Pyodide</em></p>
+<img alt="_images/pyodide.png" src="_images/pyodide.png" />
+<p>Copy the following code in the first section. Run the section with Shift+Enter keys or clicking on the button <img alt="run" src="_images/run.png" /></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">re</span><span class="o">,</span> <span class="nn">pyodide</span><span class="o">,</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span><span class="o">,</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span><span class="o">,</span> <span class="nn">scipy.ndimage</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">timedelta</span><span class="p">,</span><span class="n">datetime</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span><span class="o">,</span> <span class="nn">matplotlib.dates</span> <span class="k">as</span> <span class="nn">mdates</span>
@@ -103,7 +106,17 @@
 <span class="n">exec</span><span class="p">(</span><span class="n">pyodide</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">open_url</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>Start a new section, clicking on +, then if running for the first time, prepare the local environment folder structure with the command :</p>
+<p>After GlyApp is loaded (it can take some time depending on your computer and connection), you should get the answer :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Loading GlyApp dev version
+GlyApp successfully loaded !
+</pre></div>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>You can create as much notebook as you want, for instance one per patient or by study if necessary. Copy the header code all the time to initialize the notebook. When the browser is closed, the notebook is saved automatically in the Browser history. To avoid loosing data, it can be good to externaly save notebooks on a local disk from time to time (Right click on the notebook, then <em>Download</em>).</p>
+</div>
+<p>Start a new section in the notebook, clicking on <img alt="add" src="_images/add.png" />.</p>
+<p>If running for the first time, prepare the local environment folder structure and files with the command :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">init_environment</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -111,11 +124,14 @@
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_glu</span><span class="p">(</span><span class="s1">&#39;XX&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>or get a plot on a week interval</p>
+<p>or get a plot on weekly intervals</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_patient</span><span class="p">(</span><span class="s1">&#39;XX&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Any other patient data can now be added by drag/drop a PATIENT_NAME folder in the DATA_DIR folder in try-jupyter.</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>Any other patient data can now be added in try-jupyter by drag/drop a <strong>patient</strong> folder containing sensor data in the <strong>DATA_DIR</strong>, which is by default <em>./Data/patient/</em>. As for the notebooks, the data is saved automatically when closing the browser, until you clear the history. To avoid loosing data, keep a local version of your <strong>DATA_DIR</strong> folder, and regularly download the results in the <strong>RESULTS_DIR</strong> folder (right click on the result file, then <em>Download</em>).</p>
+</div>
 </section>
 <section id="with-python-v3-12-installed-locally">
 <h2>With python (v3.12) installed locally<a class="headerlink" href="#with-python-v3-12-installed-locally" title="Link to this heading"></a></h2>

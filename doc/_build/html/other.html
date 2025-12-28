@@ -1,0 +1,499 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Other functions &mdash; GlyApp 1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=29a6c3e3"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Plotting" href="plot.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GlyApp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensors.html">Sensors Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glycemia.html">Statistics of Glycemia</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Other functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.CONGAn"><code class="docutils literal notranslate"><span class="pre">CONGAn()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.DATA_DIR"><code class="docutils literal notranslate"><span class="pre">DATA_DIR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.FILENAMES"><code class="docutils literal notranslate"><span class="pre">FILENAMES</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.LIBRARY"><code class="docutils literal notranslate"><span class="pre">LIBRARY</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.RESULT_DIR"><code class="docutils literal notranslate"><span class="pre">RESULT_DIR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.SENSORS_FILENAME"><code class="docutils literal notranslate"><span class="pre">SENSORS_FILENAME</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.SENSORS_LIBRARY"><code class="docutils literal notranslate"><span class="pre">SENSORS_LIBRARY</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.calc_MAGE"><code class="docutils literal notranslate"><span class="pre">calc_MAGE()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.calc_glu"><code class="docutils literal notranslate"><span class="pre">calc_glu()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.calc_hypo"><code class="docutils literal notranslate"><span class="pre">calc_hypo()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.clean_data"><code class="docutils literal notranslate"><span class="pre">clean_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.conversion_factor"><code class="docutils literal notranslate"><span class="pre">conversion_factor()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.date_col_num"><code class="docutils literal notranslate"><span class="pre">date_col_num()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.datenum"><code class="docutils literal notranslate"><span class="pre">datenum()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.gly_hypo_prol"><code class="docutils literal notranslate"><span class="pre">gly_hypo_prol</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.gly_hypo_short"><code class="docutils literal notranslate"><span class="pre">gly_hypo_short</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.import_libraries_pyodide"><code class="docutils literal notranslate"><span class="pre">import_libraries_pyodide()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.import_libraries_urllib"><code class="docutils literal notranslate"><span class="pre">import_libraries_urllib()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.init_environment"><code class="docutils literal notranslate"><span class="pre">init_environment()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.make_synthetic_gly_data"><code class="docutils literal notranslate"><span class="pre">make_synthetic_gly_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.numdate"><code class="docutils literal notranslate"><span class="pre">numdate()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.plot_patient"><code class="docutils literal notranslate"><span class="pre">plot_patient()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.read_Glu"><code class="docutils literal notranslate"><span class="pre">read_Glu()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.read_accelero"><code class="docutils literal notranslate"><span class="pre">read_accelero()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.read_cardio"><code class="docutils literal notranslate"><span class="pre">read_cardio()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.read_glu_octave"><code class="docutils literal notranslate"><span class="pre">read_glu_octave()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.read_glu_pandas"><code class="docutils literal notranslate"><span class="pre">read_glu_pandas()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.read_libraries"><code class="docutils literal notranslate"><span class="pre">read_libraries()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.short_plot_patient"><code class="docutils literal notranslate"><span class="pre">short_plot_patient()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.sort_times"><code class="docutils literal notranslate"><span class="pre">sort_times()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.test_all"><code class="docutils literal notranslate"><span class="pre">test_all()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.time_hypo_prol"><code class="docutils literal notranslate"><span class="pre">time_hypo_prol</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gly_toolbox_dev.time_hypo_short"><code class="docutils literal notranslate"><span class="pre">time_hypo_short</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GlyApp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Other functions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/other.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-gly_toolbox_dev">
+<span id="other-functions"></span><h1>Other functions<a class="headerlink" href="#module-gly_toolbox_dev" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.CONGAn">
+<span class="sig-name descname"><span class="pre">CONGAn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Glu_interp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.CONGAn" title="Link to this definition"></a></dt>
+<dd><p>Function to compute the CONGAn index</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>Glu_interp<span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>TYPE</dt><dd><p>DESCRIPTION.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="gly_toolbox_dev.DATA_DIR">
+<span class="sig-name descname"><span class="pre">DATA_DIR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'./Data/'</span></em><a class="headerlink" href="#gly_toolbox_dev.DATA_DIR" title="Link to this definition"></a></dt>
+<dd><p>Path where raw sensor data are kept</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="gly_toolbox_dev.FILENAMES">
+<span class="sig-name descname"><span class="pre">FILENAMES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'&quot;Filename&quot;,&quot;Sensor&quot;\n&quot;Capteur_freestyle.txt&quot;,&quot;freeStyle&quot;\n&quot;Capteur_freestyle_pro.csv&quot;,&quot;freeStyle_pro_ancien&quot;\n&quot;Capteur_standard.csv&quot;,&quot;standard&quot;\n&quot;Capteur.csv&quot;,&quot;ipro2&quot;\n&quot;Capteur_valeur.csv&quot;,&quot;ipro2_valeur&quot;\n&quot;Capteur.txt&quot;,&quot;dexcom&quot;\n&quot;CLARITY_CANADA_EXPORT.csv&quot;,&quot;dexcom_canada&quot;\n&quot;MEDTRONIC_CANADA_EXPORT.csv&quot;,&quot;medtronic_canada&quot;\n&quot;DIASEND_CANADA_EXPORT.csv&quot;,&quot;diasend_canada&quot;\n&quot;TIDEPOOL_CANADA_EXPORT.csv&quot;,&quot;tidepool_canada&quot;'</span></em><a class="headerlink" href="#gly_toolbox_dev.FILENAMES" title="Link to this definition"></a></dt>
+<dd><p>Default Correspondance between glycemic data filename and sensor model</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="gly_toolbox_dev.LIBRARY">
+<span class="sig-name descname"><span class="pre">LIBRARY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'&quot;Sensor&quot;,&quot;encoding&quot;,&quot;delimiter&quot;,&quot;skiprows&quot;,&quot;col_date&quot;,&quot;col_time&quot;,&quot;col_datetime&quot;,&quot;dayfirst&quot;,&quot;col_value&quot;,&quot;units&quot;\n&quot;freeStyle&quot;,&quot;utf-8&quot;,&quot;\t&quot;,&quot;1&quot;,&quot;&quot;,&quot;&quot;,&quot;Heure&quot;,&quot;FALSE&quot;,&quot;Historique</span> <span class="pre">du</span> <span class="pre">taux</span> <span class="pre">de</span> <span class="pre">glucose</span> <span class="pre">(mg/dL)&quot;,&quot;mg/dL&quot;\n&quot;freeStyle_pro_ancien&quot;,&quot;utf-8&quot;,&quot;;|\t&quot;,&quot;2&quot;,&quot;&quot;,&quot;&quot;,&quot;Horodatage</span> <span class="pre">de</span> <span class="pre">l\'appareil&quot;,&quot;TRUE&quot;,&quot;Historique</span> <span class="pre">de</span> <span class="pre">la</span> <span class="pre">glycémie</span> <span class="pre">mg/dL&quot;,&quot;mg/dL&quot;\n&quot;standard&quot;,&quot;utf-8&quot;,&quot;;|s&quot;,&quot;0&quot;,&quot;Date</span> <span class="pre">(jj/mm/aaaa)&quot;,&quot;Heure(hh:mm:ss)&quot;,&quot;&quot;,&quot;TRUE&quot;,&quot;Capteur</span> <span class="pre">de</span> <span class="pre">glycemie</span> <span class="pre">(mg/dl)&quot;,&quot;mg/dL&quot;\n&quot;ipro2&quot;,&quot;utf-16le&quot;,&quot;\t&quot;,&quot;11&quot;,&quot;Date&quot;,&quot;Heure&quot;,&quot;Horodatage&quot;,&quot;TRUE&quot;,&quot;Capteur</span> <span class="pre">de</span> <span class="pre">glycémie</span> <span class="pre">(mg/dl)&quot;,&quot;mg/dL&quot;\n&quot;dexcom&quot;,&quot;utf-8&quot;,&quot;\t&quot;,&quot;0&quot;,&quot;&quot;,&quot;&quot;,&quot;GlucoseInternalTime&quot;,&quot;TRUE&quot;,&quot;GlucoseValue&quot;,&quot;mg/dL&quot;\n&quot;dexcom_canada&quot;,&quot;utf-8&quot;,&quot;,&quot;,&quot;0&quot;,&quot;&quot;,&quot;&quot;,&quot;Timestamp</span> <span class="pre">(YYYY-MM-DDThh:mm:ss)&quot;,&quot;FALSE&quot;,&quot;Glucose</span> <span class="pre">Value</span> <span class="pre">(mmol/L)&quot;,&quot;mmol/L&quot;\n&quot;medtronic_canada&quot;,&quot;utf-8&quot;,&quot;;&quot;,&quot;6&quot;,&quot;Date&quot;,&quot;Time&quot;,&quot;&quot;,&quot;TRUE&quot;,&quot;Sensor</span> <span class="pre">Glucose</span> <span class="pre">(mmol/L)&quot;,&quot;mmol/L&quot;\n&quot;diasend_canada&quot;,&quot;utf-8&quot;,&quot;;&quot;,&quot;4&quot;,&quot;&quot;,&quot;&quot;,&quot;Time&quot;,&quot;TRUE&quot;,&quot;mmol/L&quot;,&quot;mmol/L&quot;\n&quot;tidepool_canada&quot;,&quot;utf-8&quot;,&quot;;&quot;,&quot;0&quot;,&quot;&quot;,&quot;&quot;,&quot;Local</span> <span class="pre">Time&quot;,&quot;FALSE&quot;,&quot;Value&quot;,&quot;mmol/L&quot;\n&quot;ipro2_valeur&quot;,&quot;utf-16le&quot;,&quot;\t&quot;,&quot;11&quot;,&quot;Date&quot;,&quot;Heure&quot;,&quot;Horodatage&quot;,&quot;TRUE&quot;,&quot;Valeur</span> <span class="pre">de</span> <span class="pre">capteur</span> <span class="pre">(mg/dl)&quot;,&quot;mg/dL&quot;'</span></em><a class="headerlink" href="#gly_toolbox_dev.LIBRARY" title="Link to this definition"></a></dt>
+<dd><p>Default Format of sensor files to open in python</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="gly_toolbox_dev.RESULT_DIR">
+<span class="sig-name descname"><span class="pre">RESULT_DIR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'./Patients/'</span></em><a class="headerlink" href="#gly_toolbox_dev.RESULT_DIR" title="Link to this definition"></a></dt>
+<dd><p>Path where Glyapp results are kept</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="gly_toolbox_dev.SENSORS_FILENAME">
+<span class="sig-name descname"><span class="pre">SENSORS_FILENAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'./filename_sensors.csv'</span></em><a class="headerlink" href="#gly_toolbox_dev.SENSORS_FILENAME" title="Link to this definition"></a></dt>
+<dd><p>Correspondance filename betwwen sensors</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="gly_toolbox_dev.SENSORS_LIBRARY">
+<span class="sig-name descname"><span class="pre">SENSORS_LIBRARY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'./sensor_library.csv'</span></em><a class="headerlink" href="#gly_toolbox_dev.SENSORS_LIBRARY" title="Link to this definition"></a></dt>
+<dd><p>Sensors library filename</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.calc_MAGE">
+<span class="sig-name descname"><span class="pre">calc_MAGE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Glu_interp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nstd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tav</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.calc_MAGE" title="Link to this definition"></a></dt>
+<dd><p>Function to compute the mAGE index on interpolated glycemic data</p>
+<section id="id1">
+<h2>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>Glu_interp<span class="classifier">(n) array of float</span></dt><dd><p>Glycemic time serie, equally sampled in time</p>
+</dd>
+<dt>Time<span class="classifier">(n) array of float</span></dt><dd><p>Corresponding time array</p>
+</dd>
+<dt>nstd<span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+<dt>Tav<span class="classifier">TYPE</span></dt><dd><p>Moving average duration</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h2>Returns<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>Amplitude_real<span class="classifier">TYPE</span></dt><dd><p>Array of amplitude of glycemic variabilities between peaks</p>
+</dd>
+<dt>Time_Amplitude<span class="classifier">TYPE</span></dt><dd><p>Array of time stamp between peaks</p>
+</dd>
+<dt>idAll_filt<span class="classifier">TYPE</span></dt><dd><p>Index of peaks</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.calc_glu">
+<span class="sig-name descname"><span class="pre">calc_glu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'XX'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">GluCible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([[70,</span> <span class="pre">140],</span> <span class="pre">[70,</span> <span class="pre">180],</span> <span class="pre">[54,</span> <span class="pre">200],</span> <span class="pre">[60,</span> <span class="pre">300]])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intervals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([],</span> <span class="pre">shape=(0,</span> <span class="pre">2),</span> <span class="pre">dtype=float64)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">WRITE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'a'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.calc_glu" title="Link to this definition"></a></dt>
+<dd><p>Function to compute glycemic statistics of a patient glycemic time series, located in the folder <strong>DATA_DIR</strong>/<strong>patient</strong>/</p>
+<section id="id3">
+<h2>Parameters<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>patient<span class="classifier">str</span></dt><dd><p>Name of the folder containing all patient’s data in the <strong>DATA_DIR</strong> folder, which is ./Data/ by default.</p>
+</dd>
+<dt>GluCible<span class="classifier">array</span></dt><dd><p>(n,2) array containing the values of glycemic levels for hypo and hyper glycemia</p>
+</dd>
+<dt>WRITE<span class="classifier">‘a’, ‘w’</span></dt><dd><p>‘a’ append or ‘r’ replace result file</p>
+</dd>
+<dt>encoding<span class="classifier">str</span></dt><dd><p>(old) Used to force glycemic file encoding</p>
+</dd>
+<dt>verbose<span class="classifier">True/False</span></dt><dd><p>To display more results</p>
+</dd>
+<dt>interp<span class="classifier">False/True</span></dt><dd><p>To compute statistics on interpolated data rather than raw sensor data</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bool</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h2>Returns<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>bool</dt><dd><p>if result is successfull</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.calc_hypo">
+<span class="sig-name descname"><span class="pre">calc_hypo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Glu_interp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T_interp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_hypo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">glu_hypo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.calc_hypo" title="Link to this definition"></a></dt>
+<dd><p>Function to compute statistics of short or prolongated hypoglycemia events</p>
+<section id="id5">
+<h2>Parameters<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>Glu_interp<span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+<dt>T_interp<span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+<dt>time_hypo<span class="classifier">tuple</span></dt><dd><p>tuple of [time_ep_start,time_ep_stop] values.</p>
+</dd>
+<dt>glu_hypo<span class="classifier">tuple</span></dt><dd><p>tuple of [hypo_start,hypo_stop] values.</p>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h2>Returns<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
+<p>None.</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.clean_data">
+<span class="sig-name descname"><span class="pre">clean_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">GluTime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">GluValue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.clean_data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.conversion_factor">
+<span class="sig-name descname"><span class="pre">conversion_factor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">units</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.conversion_factor" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.date_col_num">
+<span class="sig-name descname"><span class="pre">date_col_num</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.date_col_num" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.datenum">
+<span class="sig-name descname"><span class="pre">datenum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.datenum" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="gly_toolbox_dev.gly_hypo_prol">
+<span class="sig-name descname"><span class="pre">gly_hypo_prol</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[54,</span> <span class="pre">54]</span></em><a class="headerlink" href="#gly_toolbox_dev.gly_hypo_prol" title="Link to this definition"></a></dt>
+<dd><p>Glycemia (mg/l) of prolongates hypoglycemia start and end</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="gly_toolbox_dev.gly_hypo_short">
+<span class="sig-name descname"><span class="pre">gly_hypo_short</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[54,</span> <span class="pre">70]</span></em><a class="headerlink" href="#gly_toolbox_dev.gly_hypo_short" title="Link to this definition"></a></dt>
+<dd><p>Glycemia (mg/l) of short hypoglycemia start and end</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.import_libraries_pyodide">
+<span class="sig-name descname"><span class="pre">import_libraries_pyodide</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.import_libraries_pyodide" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.import_libraries_urllib">
+<span class="sig-name descname"><span class="pre">import_libraries_urllib</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.import_libraries_urllib" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.init_environment">
+<span class="sig-name descname"><span class="pre">init_environment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'XX'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.init_environment" title="Link to this definition"></a></dt>
+<dd><p>Prepare the local folder structure for the first time where data has to be stored
+and results are written.</p>
+<p>Create the sensor database if the file do not exist.</p>
+<p>Create a test case with synthetic data for patient name XX.</p>
+<section id="id7">
+<h2>Parameters<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>patient<span class="classifier">str, optional</span></dt><dd><p>Codename of the patient to create. The default is ‘XX’.</p>
+</dd>
+</dl>
+</section>
+<section id="id8">
+<h2>Returns<a class="headerlink" href="#id8" title="Link to this heading"></a></h2>
+<p>None.</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.make_synthetic_gly_data">
+<span class="sig-name descname"><span class="pre">make_synthetic_gly_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'XX'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gly_mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gly_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gly_corr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2025-01-01'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.make_synthetic_gly_data" title="Link to this definition"></a></dt>
+<dd><p>Return a CSV file with synthetic glycemic data time series</p>
+<section id="id9">
+<h2>Parameters<a class="headerlink" href="#id9" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>patient<span class="classifier">str, optional</span></dt><dd><p>Codename of patient to create. The default is ‘XX’.</p>
+</dd>
+<dt>ndays<span class="classifier">int, optional</span></dt><dd><p>Duration f the time serie in days. The default is 30.</p>
+</dd>
+<dt>dt<span class="classifier">int, optional</span></dt><dd><p>Measure intervals in minuts. The default is 15.</p>
+</dd>
+<dt>gly_mean<span class="classifier">float, optional</span></dt><dd><p>Mean glycemia. The default is 150.</p>
+</dd>
+<dt>gly_std<span class="classifier">float, optional</span></dt><dd><p>Standard deviation of glycemia. The default is 150.</p>
+</dd>
+<dt>gly_corr<span class="classifier">float, optional</span></dt><dd><p>Time correlation of glycemia in min. The default is 30.</p>
+</dd>
+<dt>start_date<span class="classifier">str, optional</span></dt><dd><p>Start date of the timeserie. The default is “2025-01-01”.</p>
+</dd>
+<dt>seed<span class="classifier">int, optional</span></dt><dd><p>Seed for random generator.</p>
+</dd>
+</dl>
+</section>
+<section id="id10">
+<h2>Returns<a class="headerlink" href="#id10" title="Link to this heading"></a></h2>
+<p>None.</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.numdate">
+<span class="sig-name descname"><span class="pre">numdate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.numdate" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.plot_patient">
+<span class="sig-name descname"><span class="pre">plot_patient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'XX'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_Hour</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">70</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hyper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">180</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">superhypo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">54</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">superhyper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_acc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filt_acc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seuils_acc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">100,</span> <span class="pre">250,</span> <span class="pre">500,</span> <span class="pre">1000,</span> <span class="pre">2000]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_temp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_bpm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filt_bpm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seuils_bpm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[20,</span> <span class="pre">300]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_alt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">savefig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.plot_patient" title="Link to this definition"></a></dt>
+<dd><p>Plot the patient data on a dayly basis</p>
+<section id="id11">
+<h2>Parameters<a class="headerlink" href="#id11" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>patient<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is ‘XX’.</p>
+</dd>
+<dt>encoding<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is ‘utf-8’.</p>
+</dd>
+<dt>start<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is None.</p>
+</dd>
+<dt>end<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is None.</p>
+</dd>
+<dt>start_Hour<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is 7.</p>
+</dd>
+<dt>hypo<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is 70.</p>
+</dd>
+<dt>hyper<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is 180.</p>
+</dd>
+<dt>superhypo<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is 54.</p>
+</dd>
+<dt>superhyper<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is 250.</p>
+</dd>
+<dt>plot_acc<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is False.</p>
+</dd>
+<dt>filt_acc<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is 1.</p>
+</dd>
+<dt>seuils_acc<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is [0,100,250,500,1000,2000].</p>
+</dd>
+<dt>plot_temp<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is 0.</p>
+</dd>
+<dt>plot_bpm<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is False.</p>
+</dd>
+<dt>filt_bpm<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is 1.</p>
+</dd>
+<dt>seuils_bpm<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is [20,300].</p>
+</dd>
+<dt>plot_alt<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is 0.</p>
+</dd>
+<dt>savefig<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is True.</p>
+</dd>
+<dt>lw<span class="classifier">TYPE, optional</span></dt><dd><p>DESCRIPTION. The default is 2.</p>
+</dd>
+</dl>
+</section>
+<section id="id12">
+<h2>Returns<a class="headerlink" href="#id12" title="Link to this heading"></a></h2>
+<p>None.</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.read_Glu">
+<span class="sig-name descname"><span class="pre">read_Glu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.read_Glu" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.read_accelero">
+<span class="sig-name descname"><span class="pre">read_accelero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patient</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.read_accelero" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.read_cardio">
+<span class="sig-name descname"><span class="pre">read_cardio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patient</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.read_cardio" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.read_glu_octave">
+<span class="sig-name descname"><span class="pre">read_glu_octave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.read_glu_octave" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.read_glu_pandas">
+<span class="sig-name descname"><span class="pre">read_glu_pandas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.read_glu_pandas" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.read_libraries">
+<span class="sig-name descname"><span class="pre">read_libraries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.read_libraries" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.short_plot_patient">
+<span class="sig-name descname"><span class="pre">short_plot_patient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'GZ2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">70</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hyper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">180</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">superhypo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">54</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">superhyper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_acc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filt_acc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seuils_acc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">100,</span> <span class="pre">250,</span> <span class="pre">500,</span> <span class="pre">1000,</span> <span class="pre">2000]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_bpm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filt_bpm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seuils_bpm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[20,</span> <span class="pre">60,</span> <span class="pre">100,</span> <span class="pre">120,</span> <span class="pre">150,</span> <span class="pre">200,</span> <span class="pre">300]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_alt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">savefig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.short_plot_patient" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.sort_times">
+<span class="sig-name descname"><span class="pre">sort_times</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">GluTime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">GluValue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.sort_times" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.test_all">
+<span class="sig-name descname"><span class="pre">test_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.test_all" title="Link to this definition"></a></dt>
+<dd><p>Function to test all the glycemic sensor reading of all folders present in DATA
+Show errors of reading in red</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="gly_toolbox_dev.time_hypo_prol">
+<span class="sig-name descname"><span class="pre">time_hypo_prol</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[120,</span> <span class="pre">120]</span></em><a class="headerlink" href="#gly_toolbox_dev.time_hypo_prol" title="Link to this definition"></a></dt>
+<dd><p>Time (minutes) of prolongated hypoglycemia start and end</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="gly_toolbox_dev.time_hypo_short">
+<span class="sig-name descname"><span class="pre">time_hypo_short</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[15,</span> <span class="pre">15]</span></em><a class="headerlink" href="#gly_toolbox_dev.time_hypo_short" title="Link to this definition"></a></dt>
+<dd><p>Time (minutes) of short hypoglycemia start and end</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="plot.html" class="btn btn-neutral float-left" title="Plotting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, joris.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

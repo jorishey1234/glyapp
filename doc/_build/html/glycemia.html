@@ -52,6 +52,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#list-of-indices-implemented">List of indices implemented</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-statistics">Basic Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hypoglycemia-events">Hypoglycemia events</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#short-hypoglycemia-is-defined-by">Short hypoglycemia is defined by:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#prolongated-hypoglycemia-is-defined-by">Prolongated hypoglycemia is defined by:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#function-is-called-by">Function is called by:</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#mage">MAGE</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#gly_toolbox_dev.calc_MAGE"><code class="docutils literal notranslate"><span class="pre">calc_MAGE()</span></code></a></li>
 </ul>
@@ -60,12 +67,12 @@
 <li class="toctree-l4"><a class="reference internal" href="#gly_toolbox_dev.CONGAn"><code class="docutils literal notranslate"><span class="pre">CONGAn()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#other">Other</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="other.html">Other functions</a></li>
 </ul>
 
         </div>
@@ -141,14 +148,91 @@
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_glu</span><span class="p">(</span><span class="n">patient</span><span class="o">=</span><span class="s1">&#39;XX&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Provide a prescribed interval</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>Si on a déjà fait tourner le code pour ce patient sur un autre intervalle, par défaut cela ajoute les lignes de résultats après les premières lignes (fonction append). We can overwrite the data by specyfying WRITE=’w’.</p>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_glu</span><span class="p">(</span><span class="n">patient</span><span class="o">=</span><span class="s1">&#39;XX&#39;</span><span class="p">,</span><span class="n">WRITE</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Provide one or several prescribed time intervals to compute statistics :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_glu</span><span class="p">(</span><span class="n">patient</span><span class="o">=</span><span class="s1">&#39;XX&#39;</span><span class="p">,</span><span class="n">intervals</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;2025-01-12 08:00&quot;</span><span class="p">,</span><span class="s2">&quot;2025-01-14 08:00&quot;</span><span class="p">]])</span>
 </pre></div>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>If an interval file named interval_file.csv exist in the <strong>patient</strong> folder, it is added to the intervals to compute statistics.</p>
 </div>
 </section>
 </section>
 <section id="list-of-indices-implemented">
 <h2>List of indices implemented<a class="headerlink" href="#list-of-indices-implemented" title="Link to this heading"></a></h2>
+<section id="basic-statistics">
+<h3>Basic Statistics<a class="headerlink" href="#basic-statistics" title="Link to this heading"></a></h3>
+<p>Min,Max,Mean,Std,% of good values, Area below curve</p>
+<p>JIndex, LBGI, HBGI, BGRI, GRADE_score_i, EUGLY_cont_i</p>
+<p>M_Index <a class="footnote-reference brackets" href="#m" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>, ADRR</p>
+</section>
+<section id="hypoglycemia-events">
+<h3>Hypoglycemia events<a class="headerlink" href="#hypoglycemia-events" title="Link to this heading"></a></h3>
+<p>Time, Duration, Frequency of short and prolongated hypoglycemia events</p>
+<section id="short-hypoglycemia-is-defined-by">
+<h4>Short hypoglycemia is defined by:<a class="headerlink" href="#short-hypoglycemia-is-defined-by" title="Link to this heading"></a></h4>
+<dl class="py data">
+<dt class="sig sig-object py" id="gly_toolbox_dev.time_hypo_short">
+<span class="sig-name descname"><span class="pre">time_hypo_short</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[15,</span> <span class="pre">15]</span></em><a class="headerlink" href="#gly_toolbox_dev.time_hypo_short" title="Link to this definition"></a></dt>
+<dd><p>Time (minutes) of short hypoglycemia start and end</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="gly_toolbox_dev.gly_hypo_short">
+<span class="sig-name descname"><span class="pre">gly_hypo_short</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[54,</span> <span class="pre">70]</span></em><a class="headerlink" href="#gly_toolbox_dev.gly_hypo_short" title="Link to this definition"></a></dt>
+<dd><p>Glycemia (mg/l) of short hypoglycemia start and end</p>
+</dd></dl>
+
+</section>
+<section id="prolongated-hypoglycemia-is-defined-by">
+<h4>Prolongated hypoglycemia is defined by:<a class="headerlink" href="#prolongated-hypoglycemia-is-defined-by" title="Link to this heading"></a></h4>
+<dl class="py data">
+<dt class="sig sig-object py" id="gly_toolbox_dev.time_hypo_prol">
+<span class="sig-name descname"><span class="pre">time_hypo_prol</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[120,</span> <span class="pre">120]</span></em><a class="headerlink" href="#gly_toolbox_dev.time_hypo_prol" title="Link to this definition"></a></dt>
+<dd><p>Time (minutes) of prolongated hypoglycemia start and end</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="gly_toolbox_dev.gly_hypo_prol">
+<span class="sig-name descname"><span class="pre">gly_hypo_prol</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[54,</span> <span class="pre">54]</span></em><a class="headerlink" href="#gly_toolbox_dev.gly_hypo_prol" title="Link to this definition"></a></dt>
+<dd><p>Glycemia (mg/l) of prolongates hypoglycemia start and end</p>
+</dd></dl>
+
+</section>
+<section id="function-is-called-by">
+<h4>Function is called by:<a class="headerlink" href="#function-is-called-by" title="Link to this heading"></a></h4>
+<dl class="py function">
+<dt class="sig sig-object py" id="gly_toolbox_dev.calc_hypo">
+<span class="sig-name descname"><span class="pre">calc_hypo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Glu_interp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T_interp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_hypo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">glu_hypo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.calc_hypo" title="Link to this definition"></a></dt>
+<dd><p>Function to compute statistics of short or prolongated hypoglycemia events</p>
+<section id="id2">
+<h5>Parameters<a class="headerlink" href="#id2" title="Link to this heading"></a></h5>
+<dl class="simple">
+<dt>Glu_interp<span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+<dt>T_interp<span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+<dt>time_hypo<span class="classifier">tuple</span></dt><dd><p>tuple of [time_ep_start,time_ep_stop] values.</p>
+</dd>
+<dt>glu_hypo<span class="classifier">tuple</span></dt><dd><p>tuple of [hypo_start,hypo_stop] values.</p>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h5>Returns<a class="headerlink" href="#id3" title="Link to this heading"></a></h5>
+<p>None.</p>
+</section>
+</dd></dl>
+
+</section>
+</section>
 <section id="mage">
 <h3>MAGE<a class="headerlink" href="#mage" title="Link to this heading"></a></h3>
 <p>A description and ref</p>
@@ -156,8 +240,8 @@
 <dt class="sig sig-object py" id="gly_toolbox_dev.calc_MAGE">
 <span class="sig-name descname"><span class="pre">calc_MAGE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Glu_interp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nstd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tav</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.calc_MAGE" title="Link to this definition"></a></dt>
 <dd><p>Function to compute the mAGE index on interpolated glycemic data</p>
-<section id="id1">
-<h4>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<section id="id4">
+<h4>Parameters<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>Glu_interp<span class="classifier">(n) array of float</span></dt><dd><p>Glycemic time serie, equally sampled in time</p>
 </dd>
@@ -169,8 +253,8 @@
 </dd>
 </dl>
 </section>
-<section id="id2">
-<h4>Returns<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
+<section id="id5">
+<h4>Returns<a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>Amplitude_real<span class="classifier">TYPE</span></dt><dd><p>Array of amplitude of glycemic variabilities between peaks</p>
 </dd>
@@ -190,15 +274,15 @@
 <dt class="sig sig-object py" id="gly_toolbox_dev.CONGAn">
 <span class="sig-name descname"><span class="pre">CONGAn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Glu_interp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gly_toolbox_dev.CONGAn" title="Link to this definition"></a></dt>
 <dd><p>Function to compute the CONGAn index</p>
-<section id="id3">
-<h4>Parameters<a class="headerlink" href="#id3" title="Link to this heading"></a></h4>
+<section id="id6">
+<h4>Parameters<a class="headerlink" href="#id6" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>Glu_interp<span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
 </dd>
 </dl>
 </section>
-<section id="id4">
-<h4>Returns<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
+<section id="id7">
+<h4>Returns<a class="headerlink" href="#id7" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>TYPE</dt><dd><p>DESCRIPTION.</p>
 </dd>
@@ -206,10 +290,13 @@
 </section>
 </dd></dl>
 
-</section>
-<section id="other">
-<h3>Other<a class="headerlink" href="#other" title="Link to this heading"></a></h3>
-<p>A description and ref</p>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="m" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Schlichtkrull et al., Mirouze et al.</p>
+</aside>
+</aside>
 </section>
 </section>
 </section>

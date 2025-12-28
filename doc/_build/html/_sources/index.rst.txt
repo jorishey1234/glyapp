@@ -6,15 +6,14 @@
 GlyApp Python Documentation
 ===========================
 
-Blablabla glyapp
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+GlyApp is a python application to compute many standard glycemic indices on commercial sensors.
+It was created and is currently maintained by Elsa Heyman and Joris Heyman.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    install
    sensors
    glycemia
    plot
+   other
