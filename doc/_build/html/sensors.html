@@ -1,122 +1,343 @@
+
+
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<html lang="en" data-content_root="./">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sensors Database &mdash; GlyApp 1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
-    <title>Sensors Databas &#8212; GlyApp 1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
-    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
-    <script src="_static/documentation_options.js?v=29a6c3e3"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=29a6c3e3"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Compute Glycemic Indices" href="glycemia.html" />
-    <link rel="prev" title="Installation" href="install.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
+    <link rel="next" title="Statistics of Glycemia" href="glycemia.html" />
+    <link rel="prev" title="Installation" href="install.html" /> 
+</head>
 
-  
-  
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
 
-  </head><body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
           
+          
+          <a href="index.html" class="icon icon-home">
+            GlyApp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Sensors Database</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#recognized-glycemic-sensors-formats">Recognized Glycemic Sensors formats</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gly_toolbox_dev.SENSORS_FILENAME"><code class="docutils literal notranslate"><span class="pre">SENSORS_FILENAME</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gly_toolbox_dev.SENSORS_LIBRARY"><code class="docutils literal notranslate"><span class="pre">SENSORS_LIBRARY</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#accelerometer-sensor-format">Accelerometer sensor format</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="glycemia.html">Statistics of Glycemia</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting</a></li>
+</ul>
 
-          <div class="body" role="main">
-            
-  <section id="sensors-databas">
-<h1>Sensors Databas<a class="headerlink" href="#sensors-databas" title="Link to this heading">¶</a></h1>
-<section id="glycemic-sensors-format">
-<h2>Glycemic Sensors format<a class="headerlink" href="#glycemic-sensors-format" title="Link to this heading">¶</a></h2>
-<p>A list of the sensor format, table for read_glu</p>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GlyApp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Sensors Database</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/sensors.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sensors-database">
+<h1>Sensors Database<a class="headerlink" href="#sensors-database" title="Link to this heading"></a></h1>
+<section id="recognized-glycemic-sensors-formats">
+<h2>Recognized Glycemic Sensors formats<a class="headerlink" href="#recognized-glycemic-sensors-formats" title="Link to this heading"></a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="gly_toolbox_dev.SENSORS_FILENAME">
+<span class="sig-name descname"><span class="pre">SENSORS_FILENAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'./filename_sensors.csv'</span></em><a class="headerlink" href="#gly_toolbox_dev.SENSORS_FILENAME" title="Link to this definition"></a></dt>
+<dd><p>Correspondance filename betwwen sensors</p>
+</dd></dl>
+
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text"><strong>SENSORS_FILENAME</strong></span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<tbody>
+<tr class="row-odd"><td><p>Filename</p></td>
+<td><p>Sensor</p></td>
+</tr>
+<tr class="row-even"><td><p>Capteur_freestyle.txt</p></td>
+<td><p>freeStyle</p></td>
+</tr>
+<tr class="row-odd"><td><p>Capteur_freestyle_pro.csv</p></td>
+<td><p>freeStyle_pro_ancien</p></td>
+</tr>
+<tr class="row-even"><td><p>Capteur_standard.csv</p></td>
+<td><p>standard</p></td>
+</tr>
+<tr class="row-odd"><td><p>Capteur.csv</p></td>
+<td><p>ipro2</p></td>
+</tr>
+<tr class="row-even"><td><p>Capteur_valeur.csv</p></td>
+<td><p>ipro2_valeur</p></td>
+</tr>
+<tr class="row-odd"><td><p>Capteur.txt</p></td>
+<td><p>dexcom</p></td>
+</tr>
+<tr class="row-even"><td><p>CLARITY_CANADA_EXPORT.csv</p></td>
+<td><p>dexcom_canada</p></td>
+</tr>
+<tr class="row-odd"><td><p>MEDTRONIC_CANADA_EXPORT.csv</p></td>
+<td><p>medtronic_canada</p></td>
+</tr>
+<tr class="row-even"><td><p>DIASEND_CANADA_EXPORT.csv</p></td>
+<td><p>diasend_canada</p></td>
+</tr>
+<tr class="row-odd"><td><p>TIDEPOOL_CANADA_EXPORT.csv</p></td>
+<td><p>tidepool_canada</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="gly_toolbox_dev.SENSORS_LIBRARY">
+<span class="sig-name descname"><span class="pre">SENSORS_LIBRARY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'./sensor_library.csv'</span></em><a class="headerlink" href="#gly_toolbox_dev.SENSORS_LIBRARY" title="Link to this definition"></a></dt>
+<dd><p>Sensors library filename</p>
+</dd></dl>
+
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text"><strong>SENSORS_LIBRARY</strong></span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
+<tbody>
+<tr class="row-odd"><td><p>Sensor</p></td>
+<td><p>encoding</p></td>
+<td><p>delimiter</p></td>
+<td><p>skiprows</p></td>
+<td><p>col_date</p></td>
+<td><p>col_time</p></td>
+<td><p>col_datetime</p></td>
+<td><p>dayfirst</p></td>
+<td><p>col_value</p></td>
+<td><p>units</p></td>
+</tr>
+<tr class="row-even"><td><p>freeStyle</p></td>
+<td><p>utf-8</p></td>
+<td><p></p></td>
+<td><p>1</p></td>
+<td></td>
+<td></td>
+<td><p>Heure</p></td>
+<td><p>FALSE</p></td>
+<td><p>Historique du taux de glucose (mg/dL)</p></td>
+<td><p>mg/dL</p></td>
+</tr>
+<tr class="row-odd"><td><p>freeStyle_pro_ancien</p></td>
+<td><p>utf-8</p></td>
+<td><p>;|</p></td>
+<td><p>2</p></td>
+<td></td>
+<td></td>
+<td><p>Horodatage de l’appareil</p></td>
+<td><p>TRUE</p></td>
+<td><p>Historique de la glycémie mg/dL</p></td>
+<td><p>mg/dL</p></td>
+</tr>
+<tr class="row-even"><td><p>standard</p></td>
+<td><p>utf-8</p></td>
+<td><p>;|s</p></td>
+<td><p>0</p></td>
+<td><p>Date (jj/mm/aaaa)</p></td>
+<td><p>Heure(hh:mm:ss)</p></td>
+<td></td>
+<td><p>TRUE</p></td>
+<td><p>Capteur de glycemie (mg/dl)</p></td>
+<td><p>mg/dL</p></td>
+</tr>
+<tr class="row-odd"><td><p>ipro2</p></td>
+<td><p>utf-16le</p></td>
+<td><p></p></td>
+<td><p>11</p></td>
+<td><p>Date</p></td>
+<td><p>Heure</p></td>
+<td><p>Horodatage</p></td>
+<td><p>TRUE</p></td>
+<td><p>Capteur de glycémie (mg/dl)</p></td>
+<td><p>mg/dL</p></td>
+</tr>
+<tr class="row-even"><td><p>dexcom</p></td>
+<td><p>utf-8</p></td>
+<td><p></p></td>
+<td><p>0</p></td>
+<td></td>
+<td></td>
+<td><p>GlucoseInternalTime</p></td>
+<td><p>TRUE</p></td>
+<td><p>GlucoseValue</p></td>
+<td><p>mg/dL</p></td>
+</tr>
+<tr class="row-odd"><td><p>dexcom_canada</p></td>
+<td><p>utf-8</p></td>
+<td><p>,</p></td>
+<td><p>0</p></td>
+<td></td>
+<td></td>
+<td><p>Timestamp (YYYY-MM-DDThh:mm:ss)</p></td>
+<td><p>FALSE</p></td>
+<td><p>Glucose Value (mmol/L)</p></td>
+<td><p>mmol/L</p></td>
+</tr>
+<tr class="row-even"><td><p>medtronic_canada</p></td>
+<td><p>utf-8</p></td>
+<td><p>;</p></td>
+<td><p>6</p></td>
+<td><p>Date</p></td>
+<td><p>Time</p></td>
+<td></td>
+<td><p>TRUE</p></td>
+<td><p>Sensor Glucose (mmol/L)</p></td>
+<td><p>mmol/L</p></td>
+</tr>
+<tr class="row-odd"><td><p>diasend_canada</p></td>
+<td><p>utf-8</p></td>
+<td><p>;</p></td>
+<td><p>4</p></td>
+<td></td>
+<td></td>
+<td><p>Time</p></td>
+<td><p>TRUE</p></td>
+<td><p>mmol/L</p></td>
+<td><p>mmol/L</p></td>
+</tr>
+<tr class="row-even"><td><p>tidepool_canada</p></td>
+<td><p>utf-8</p></td>
+<td><p>;</p></td>
+<td><p>0</p></td>
+<td></td>
+<td></td>
+<td><p>Local Time</p></td>
+<td><p>FALSE</p></td>
+<td><p>Value</p></td>
+<td><p>mmol/L</p></td>
+</tr>
+<tr class="row-odd"><td><p>ipro2_valeur</p></td>
+<td><p>utf-16le</p></td>
+<td><p></p></td>
+<td><p>11</p></td>
+<td><p>Date</p></td>
+<td><p>Heure</p></td>
+<td><p>Horodatage</p></td>
+<td><p>TRUE</p></td>
+<td><p>Valeur de capteur (mg/dl)</p></td>
+<td><p>mg/dL</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>They are known issues to consider with some sensors, listed below</p>
+</div>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p>Sensor</p></td>
+<td><p>Known issues</p></td>
+</tr>
+<tr class="row-even"><td><p>freeStyle</p></td>
+<td><p>Replace HIGH by 500 and LOW by 40</p></td>
+</tr>
+<tr class="row-odd"><td><p>freeStyle_pro_ancien</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>standard</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>ipro2</p></td>
+<td><p>Before using the code, manually check if some empty cases should not be replaced by 40 or 400</p></td>
+</tr>
+<tr class="row-even"><td><p>dexcom</p></td>
+<td><p>In some old files, replace HIGH by 400 and LOW by 40</p></td>
+</tr>
+<tr class="row-odd"><td><p>dexcom_canada</p></td>
+<td><p>Replace HIGH by 22.2 mmol/L and LOW by 2.22 mmol/L</p></td>
+</tr>
+<tr class="row-even"><td><p>medtronic_canada</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>diasend_canada</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>tidepool_canada</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>ipro2_valeur</p></td>
+<td><p>Before using the code, manually check if some empty cases shou</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="accelerometer-sensor-format">
-<h2>Accelerometer sensor format<a class="headerlink" href="#accelerometer-sensor-format" title="Link to this heading">¶</a></h2>
+<h2>Accelerometer sensor format<a class="headerlink" href="#accelerometer-sensor-format" title="Link to this heading"></a></h2>
 <p>A list of the sensor format, table for read_acc</p>
 </section>
 </section>
 
 
+           </div>
           </div>
-          
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="glycemia.html" class="btn btn-neutral float-right" title="Statistics of Glycemia" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, joris.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="Main">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">GlyApp</a></h1>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-
-
-
-
-
-
-
-
-<search id="searchbox" style="display: none" role="search">
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Sensors Databas</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#glycemic-sensors-format">Glycemic Sensors format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#accelerometer-sensor-format">Accelerometer sensor format</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="glycemia.html">Compute Glycemic Indices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="install.html" title="previous chapter">Installation</a></li>
-      <li>Next: <a href="glycemia.html" title="next chapter">Compute Glycemic Indices</a></li>
-  </ul></li>
-</ul>
-</div>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &#169;2025, joris.
-      
-      |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
-      
-      |
-      <a href="_sources/sensors.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>
