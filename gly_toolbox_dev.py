@@ -1429,31 +1429,18 @@ def calc_glu(patient='XX',
 	print('Typical time step between measure is ',int(dt_med*24*60),'min')
 	# Convert units
 	GluValue_all[:, 1] = GluValue_all[:, 1] * conv_factor  # (index 1 because Python is 0-based)
-	
-	T_interp_all=np.arange(date_col_num(GluTime_all[0,:].reshape(1,-1)),date_col_num(GluTime_all[-1,:].reshape(1,-1)),1/(60*24)) # reinterpolate data on 1 min intervals
-	Glu_interp_all=np.interp(T_interp_all,date_col_num(GluTime_all),GluValue_all[:,1])
 	Glu_all=np.copy(GluValue_all)
-	
-	# Date as a panda format
+	#: Date as a panda format
 	GluTime_all_pd=numdate(date_col_num(GluTime_all))
-	
-	dt_med=np.median(np.diff(GluTime_all_pd))
-	#plt.hist(np.diff(GluTime_all_pd))
-	#print('Typical time step between measure is ',dt_med)
-	# Date as a num format
+	#: Date as a num format
 	GluTime_all_num=date_col_num(GluTime_all)
-	
-	# Tolerance for the absence of measure
-	#tlag_Glu = 30 / (60 * 24)  # 30 minutes in days
+	#: Typical time interval between measures
+	dt_med=np.median(np.diff(GluTime_all_pd))
+	#: Tolerance for the absence of measure
 	tlag_Glu = 1.5 * dt_med / np.timedelta64(1,'D')  # in days
+	#: Detect the presence of gaps in the data
 	gaps=np.where(np.diff(GluTime_all_num)>tlag_Glu)[0]
-	GluNaN_all=np.ones(Glu_interp_all.shape)
-	for g in gaps:
-		id_gap=np.where((T_interp_all>GluTime_all_num[g])&(T_interp_all<GluTime_all_num[g+1]))[0]
-		GluNaN_all[id_gap]=np.nan
 
-	#Index_all_pd=np.arange(len(GluTime_pd))
-	
 	# Intervals
 	start = numdate(date_col_num(GluTime_all[:1,:]))
 	end = numdate(date_col_num(GluTime_all[-1:,:]))
@@ -1479,16 +1466,30 @@ def calc_glu(patient='XX',
 	for interval in intervals:
 		isin=(GluTime_all_pd>pd.to_datetime(interval[0]))&(GluTime_all_pd<pd.to_datetime(interval[1]))
 		GluTime_pd=GluTime_all_pd[isin]
-		Glu_raw=GluValue_all[isin,1]
-		#print(GluTime_pd)
-		# Loop to remove automesure
-		
-		
 		Index_pd=np.arange(len(GluTime_pd))
-		isin_interp=(T_interp_all>datenum(pd.to_datetime(interval[0])))&(T_interp_all<=datenum(pd.to_datetime(interval[1])))
-		GluNaN=GluNaN_all[isin_interp]
-		Glu_interp=Glu_interp_all[isin_interp]*GluNaN
-		T_interp=T_interp_all[isin_interp]
+		Glu_raw=GluValue_all[isin,1]
+		
+		num_start=datenum(pd.to_datetime(interval[0]))
+		num_end=datenum(pd.to_datetime(interval[1]))
+		
+		# Interpolation on a regular time grid
+#		T_interp_all=np.arange(date_col_num(GluTime_all[0,:].reshape(1,-1)),date_col_num(GluTime_all[-1,:].reshape(1,-1)),1/(60*24)) # reinterpolate data on 1 min intervals
+		T_interp=np.arange(num_start,num_end,1/(60*24)) # reinterpolate data on 1 min intervals
+		Glu_interp=np.interp(T_interp,date_col_num(GluTime_all),GluValue_all[:,1],
+					left=np.nan,right=np.nan)
+		GluNaN=np.copy(Glu_interp)
+		# Add NaN where ther is a large gap inside data
+		for g in gaps:
+			id_gap=np.where((T_interp>GluTime_all_num[g])&(T_interp<GluTime_all_num[g+1]))[0]
+			GluNaN[id_gap]=np.nan
+			
+		#print(GluTime_pd)
+# 		isin_interp=(T_interp_all>datenum(pd.to_datetime(interval[0])))&(T_interp_all<=datenum(pd.to_datetime(interval[1])))
+# 		GluNaN=GluNaN_all[isin_interp]
+# 		Glu_interp=Glu_interp_all[isin_interp]*GluNaN
+# 		T_interp=T_interp_all[isin_interp]
+		
+		# Check how much of the interval is outside the total sensor data
 		
 		if interp:
 			Glu=Glu_interp
@@ -1521,7 +1522,7 @@ def calc_glu(patient='XX',
 		#print(nb_values_expected)
 		#print(len(Glu_raw))
 		#IDX['%_good_values'] =  100 * (len(Glu_raw)/nb_values_expected)
-		print('Duration: ', duration,'| Good values (%):',int(IDX['%_good_values']))
+		print('Duration: ', duration,'| Good values {:1.3f}%):'.format(IDX['%_good_values']))
 		# Other index
 		nval=Glu.shape[0]
 		IDX['glycemia_std_err']=IDX['glycemia_std']/np.sqrt(2*(nval-1)) # Error on std for large nval (web.eecs.umich.edu/~fessler/papers/files/tr/stderr.pdf)
