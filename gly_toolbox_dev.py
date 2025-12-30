@@ -1335,7 +1335,7 @@ def calc_glu(patient='XX',
 			 WRITE='a',
 			 encoding='utf-8',
 			 verbose=False,
-			 interp=False):
+			 interp=True):
 	
 	"""
 	
@@ -1353,8 +1353,8 @@ def calc_glu(patient='XX',
 		(old) Used to force glycemic file encoding
 	verbose : True/False
 		To display more results
-	interp : False/True
-		To compute statistics on interpolated data rather than raw sensor data
+	interp : True
+		To compute statistics on interpolated data rather than raw sensor data. Default True to avoid auto-measure biais
 	
 	:returns:
 		Bool
@@ -1436,8 +1436,9 @@ def calc_glu(patient='XX',
 	GluTime_all_num=date_col_num(GluTime_all)
 	#: Typical time interval between measures
 	dt_med=np.median(np.diff(GluTime_all_pd))
-	#: Tolerance for the absence of measure
-	tlag_Glu = 1.5 * dt_med / np.timedelta64(1,'D')  # in days
+	#tlag_Glu = 2.1 * dt_med / np.timedelta64(1,'D')  # in days
+	#: 30 min 1s Tolerance for the absence of measure
+	tlag_Glu = (np.timedelta64(30,'m')+np.timedelta64(1,'s')) / np.timedelta64(1,'D')  # in days
 	#: Detect the presence of gaps in the data
 	gaps=np.where(np.diff(GluTime_all_num)>tlag_Glu)[0]
 
