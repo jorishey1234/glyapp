@@ -41,6 +41,18 @@ SENSORS_FILENAME='./filename_sensors.csv'
  #: Sensors library filename
 SENSORS_LIBRARY='./sensor_library.csv'
 
+#: Time (minutes) of short hypoglycemia start and end
+time_hypo_short=[15,15]
+
+#: Glycemia (mg/l) of short hypoglycemia start and end
+gly_hypo_short=[54,70]
+
+#: Time (minutes) of prolongated hypoglycemia start and end
+time_hypo_prol=[120,120]
+
+#: Glycemia (mg/l) of prolongates hypoglycemia start and end
+gly_hypo_prol=[54,54]
+
 FILE_ENCODING = {
 	'capteur_medtronics': 'utf-16',
 	'capteur_ipro': 'utf-16le',
@@ -88,6 +100,19 @@ LIBRARY = (
 # =============================================================================
 # GLYAPP FUNCTIONS
 # =============================================================================
+def read_intervals(file_path_inter):
+	inter_df = pd.read_csv(file_path_inter, skiprows=0, sep=';|,',engine='python')
+	print(inter_df)
+	inter_df['Date_start'] = inter_df['Date_start'].astype('string')
+	inter_df['Heure_start'] = inter_df['Heure_start'].astype('string')
+	#inter_df['timetemps_start'] = pd.to_datetime(inter_df['Date_start']+ ' ' + inter_df['Heure_start'],format='%d/%m/%Y %H:%M:%S',dayfirst=True,errors='coerce')
+	inter_df['Date_end'] = inter_df['Date_end'].astype('string')
+	inter_df['Heure_end'] = inter_df['Heure_end'].astype('string')
+	#inter_df['timetemps_end'] = pd.to_datetime(inter_df['Date_end'] +' ' + inter_df['Heure_end'],format='%d/%m/%Y %H:%M:%S',dayfirst=True,errors='coerce')
+	for i in range(len(inter_df)):
+		startint=inter_df['Date_start'][i]+' '+ inter_df['Heure_start'][i]
+		endint=inter_df['Date_end'][i]+' '+ inter_df['Heure_end'][i]
+	return startint, endint
 
 def init_environment(patient='XX'):
 	"""
@@ -396,6 +421,25 @@ def CONGAn(Glu_interp):
 
 # Calculation of hypoglycemias
 def calc_hypo(Glu_interp,T_interp,time_hypo,glu_hypo):
+	"""
+	Function to compute statistics of short or prolongated hypoglycemia events
+	
+	Parameters
+	----------
+	Glu_interp : TYPE
+		DESCRIPTION.
+	T_interp : TYPE
+		DESCRIPTION.
+	time_hypo : tuple
+		tuple of [time_ep_start,time_ep_stop] values.
+	glu_hypo : tuple
+		tuple of [hypo_start,hypo_stop] values.
+
+	Returns
+	-------
+	None.
+
+	"""
 # =============================================================================
 # 	# Normal hypoglycemia
 # 	time_ep_start=15; # Min duration of Hypo episod  in seconds(start)
@@ -1420,19 +1464,8 @@ def calc_glu(patient='XX',
 #	file_path_inter = Path('Data')/patient/'interval_file.csv'
 	file_path_inter = DATA_DIR+patient+'/interval_file.csv'
 	if os.path.exists(file_path_inter):
-		inter_df = pd.read_csv(file_path_inter, skiprows=0, sep=';')
-		inter_df['Date_start'] = inter_df['Date_start'].astype('string')
-		inter_df['Heure_start'] = inter_df['Heure_start'].astype('string')
-		#inter_df['timetemps_start'] = pd.to_datetime(inter_df['Date_start']+ ' ' + inter_df['Heure_start'],format='%d/%m/%Y %H:%M:%S',dayfirst=True,errors='coerce')
-		inter_df['Date_end'] = inter_df['Date_end'].astype('string')
-		inter_df['Heure_end'] = inter_df['Heure_end'].astype('string')
-		#inter_df['timetemps_end'] = pd.to_datetime(inter_df['Date_end'] +' ' + inter_df['Heure_end'],format='%d/%m/%Y %H:%M:%S',dayfirst=True,errors='coerce')
-		for i in range(len(inter_df)):
-			startint=inter_df['Date_start'][i]+' '+ inter_df['Heure_start'][i]
-			endint=inter_df['Date_end'][i]+' '+ inter_df['Heure_end'][i]
+			startint,endint=read_intervals(file_path_inter)
 			intervals=np.vstack((intervals,[startint,endint]))
-		
-		
 		#print("les heures de départ sont :",inter_df['timetemps_start'])
 		#print("les heures de fin sont :",inter_df['timetemps_end'])
 	else:
@@ -1518,7 +1551,7 @@ def calc_glu(patient='XX',
 		# =============================================================================
 		#IDX['hypo_Start'],IDX['hypo_Stop']=calc_hypo(Glu_interp,T_interp,[15,15],[54,70])
 		#IDX['hypo_Duration']=(IDX['hypo_Stop']-IDX['hypo_Start'])*60*24; # in minutes
-		hstart,hstop=calc_hypo(Glu_interp,T_interp,[15,15],[54,70])
+		hstart,hstop=calc_hypo(Glu_interp,T_interp,time_hypo_short,gly_hypo_short)
 		IDX['hypo_Start']=numdate(hstart).round('min')
 		IDX['hypo_Stop']=numdate(hstop).round('min')
 		IDX['hypo_Duration']=np.uint16((hstop-hstart)*60*24); # in minutes
@@ -1537,7 +1570,7 @@ def calc_glu(patient='XX',
 		# =============================================================================
 		#IDX['hypo_Start_prol'],IDX['hypo_Stop_prol']=calc_hypo(Glu_interp,T_interp,[120,120],[54,54])
 		#IDX['hypo_Duration_prol']=(IDX['hypo_Stop_prol']-IDX['hypo_Start_prol'])*60*24; # in minutes
-		hstart,hstop=calc_hypo(Glu_interp,T_interp,[120,120],[54,54])
+		hstart,hstop=calc_hypo(Glu_interp,T_interp,time_hypo_prol,gly_hypo_prol)
 		IDX['hypo_prol_Start']=numdate(hstart).round('min')
 		IDX['hypo_prol_Stop']=numdate(hstop).round('min')
 		IDX['hypo_prol_Duration']=np.uint16((hstop-hstart)*60*24); # in minutes
