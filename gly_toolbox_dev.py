@@ -108,11 +108,11 @@ def read_intervals(file_path_inter):
 	#inter_df['timetemps_start'] = pd.to_datetime(inter_df['Date_start']+ ' ' + inter_df['Heure_start'],format='%d/%m/%Y %H:%M:%S',dayfirst=True,errors='coerce')
 	inter_df['Date_end'] = inter_df['Date_end'].astype('string')
 	inter_df['Heure_end'] = inter_df['Heure_end'].astype('string')
+	intervals=[]
 	#inter_df['timetemps_end'] = pd.to_datetime(inter_df['Date_end'] +' ' + inter_df['Heure_end'],format='%d/%m/%Y %H:%M:%S',dayfirst=True,errors='coerce')
 	for i in range(len(inter_df)):
-		startint=inter_df['Date_start'][i]+' '+ inter_df['Heure_start'][i]
-		endint=inter_df['Date_end'][i]+' '+ inter_df['Heure_end'][i]
-	return startint, endint
+		intervals.append([inter_df['Date_start'][i]+' '+ inter_df['Heure_start'][i],inter_df['Date_end'][i]+' '+ inter_df['Heure_end'][i]])
+	return intervals
 
 def init_environment(patient='XX'):
 	"""
@@ -1452,8 +1452,8 @@ def calc_glu(patient='XX',
 #	file_path_inter = Path('Data')/patient/'interval_file.csv'
 	file_path_inter = DATA_DIR+patient+'/interval_file.csv'
 	if os.path.exists(file_path_inter):
-			startint,endint=read_intervals(file_path_inter)
-			intervals=np.vstack((intervals,[startint,endint]))
+			intervals_from_files=read_intervals(file_path_inter)
+			intervals=np.vstack((intervals,intervals_from_files))
 		#print("les heures de départ sont :",inter_df['timetemps_start'])
 		#print("les heures de fin sont :",inter_df['timetemps_end'])
 	else:
@@ -1463,7 +1463,8 @@ def calc_glu(patient='XX',
 	
 	IDX_all=[]
 	
-	print('='*20)
+	print('='*10+' Computing on {:d} intervals '.format(len(intervals)), '='*10)
+	
 	for interval in intervals:
 		isin=(GluTime_all_pd>pd.to_datetime(interval[0]))&(GluTime_all_pd<pd.to_datetime(interval[1]))
 		GluTime_pd=GluTime_all_pd[isin]
