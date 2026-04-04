@@ -108,6 +108,13 @@ def read_intervals(file_path_inter):
 	#inter_df['timetemps_start'] = pd.to_datetime(inter_df['Date_start']+ ' ' + inter_df['Heure_start'],format='%d/%m/%Y %H:%M:%S',dayfirst=True,errors='coerce')
 	inter_df['Date_end'] = inter_df['Date_end'].astype('string')
 	inter_df['Heure_end'] = inter_df['Heure_end'].astype('string')
+	#correction si excel a transformé aaaa-mm-jj en jj/mm/aaaa, on le remet au format aaaa-mm-jj
+	for col in ['Date_start','Date_end']:
+		inter_df[col] = inter_df[col].str.replace(
+			r'^(\d{2})/(\d{2})/(\d{4})$',
+			r'\3-\2-\1',
+			regex=True)
+
 	intervals=[]
 	#inter_df['timetemps_end'] = pd.to_datetime(inter_df['Date_end'] +' ' + inter_df['Heure_end'],format='%d/%m/%Y %H:%M:%S',dayfirst=True,errors='coerce')
 	for i in range(len(inter_df)):
