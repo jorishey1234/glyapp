@@ -81,6 +81,7 @@ FILENAMES = ('"Filename","Sensor"\n'+
 '"CLARITY_CANADA_EXPORT.csv","dexcom_canada"\n'+
 '"MEDTRONIC_CANADA_EXPORT.csv","medtronic_canada"\n'+
 '"DIASEND_CANADA_EXPORT.csv","diasend_canada"\n'+
+'"Sensor_freestyle.csv","freeStyle_bresil"\n'+
 '"TIDEPOOL_CANADA_EXPORT.csv","tidepool_canada"')
 
 #: Default Format of sensor files to open in python
@@ -95,6 +96,7 @@ LIBRARY = (
 '"medtronic_canada","utf-8",";","6","Date","Time","","TRUE","Sensor Glucose (mmol/L)","mmol/L"\n'+
 '"diasend_canada","utf-8",";","4","","","Time","TRUE","mmol/L","mmol/L"\n'+
 '"tidepool_canada","utf-8",";","0","","","Local Time","FALSE","Value","mmol/L"\n'+
+'"freeStyle_bresil","utf-8",",","2","","","Carimbo de data/hora do dispositivo","TRUE","Histórico de glicose mg/dL","mg/dL"\n'+
 '"ipro2_valeur","utf-16le","\t","11","Date","Heure","Horodatage","TRUE","Valeur de capteur (mg/dl)","mg/dL"')
 
 # =============================================================================
