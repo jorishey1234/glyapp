@@ -41,16 +41,19 @@ SENSORS_FILENAME='./filename_sensors.csv'
  #: Sensors library filename
 SENSORS_LIBRARY='./sensor_library.csv'
 
-#: Time (minutes) of short hypoglycemia start and end
+#: Default pairs of values for Glycemic range search
+GLUCIBLE_DEFAULT = np.array([[70,140],[70,180],[54,250],[60,300]])
+
+#: Time (minutes) of short hypoglycemia start and end  (Danne 2017)
 time_hypo_short=[15,15]
 
-#: Glycemia (mg/l) of short hypoglycemia start and end
+#: Glycemia (mg/l) of short hypoglycemia start and end (Danne 2017)
 gly_hypo_short=[54,70]
 
-#: Time (minutes) of prolongated hypoglycemia start and end
+#: Time (minutes) of prolongated hypoglycemia start and end (Danne 2017)
 time_hypo_prol=[120,120]
 
-#: Glycemia (mg/l) of prolongates hypoglycemia start and end
+#: Glycemia (mg/l) of prolongates hypoglycemia start and end (Danne 2017)
 gly_hypo_prol=[54,54]
 
 FILE_ENCODING = {
@@ -1339,7 +1342,7 @@ def read_accelero(patient):
 	return accelero
 
 def calc_glu(patient='XX',
-			 GluCible=np.array([[70,140],[70,180],[54,200],[60,300]]),
+			 GluCible=GLUCIBLE_DEFAULT,
 			 intervals=np.array([]).reshape(-1,2),
 			 WRITE='a',
 			 encoding='utf-8',
